@@ -1,0 +1,8 @@
+.dev-search .ng-select {
+  flex: 1 1 auto;
+  width: 1%;
+}
+
+.col-content {
+  word-break: break-all;
+}

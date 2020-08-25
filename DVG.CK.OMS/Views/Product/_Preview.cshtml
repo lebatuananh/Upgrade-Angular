@@ -1,0 +1,27 @@
+﻿@using DVG.CK.OMS.Extensions;
+<div id="detailview" class="box none">
+    <div class="box-header">
+        <div class="box-title">
+            <h3 class="text-wrap no-mg-top">{{Product.Name}}</h3>
+            <div class="clearfix"></div>
+            <small class="no-margin">Ngày tạo: {{Product.CreatedDateStr}}</small>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="box-tools">
+            <a onclick="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+            <a target="_blank" href="/Product/Update?encryptId={{Product.EncryptId}}" class="mt7 btn btn-info btn-sm pull-right mg-right-10"><i class="fa fa-pencil"></i> Sửa</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="box-body overflow_hidden" ng-bind-html="trustedHtml(Product.Description)"></div>
+    <div class="box-header">
+        <div class="box-title">
+
+        </div>
+        <div class="box-tools mg-bottom-10">
+            <a onclick="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+            <a target="_blank" href="/Product/Update?encryptId={{Product.EncryptId}}" class="mt7 btn btn-info btn-sm pull-right mg-right-10"><i class="fa fa-pencil"></i> Sửa</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

@@ -1,0 +1,237 @@
+﻿@{
+    ViewBag.Title = "Quản lý thành viên";
+}
+
+<script src="~/JsModel/UsersController.js"></script>
+<script src="~/JsModel/UsersActionController.js"></script>
+
+<section class="content" ng-app="Users" ng-controller="UsersController" ng-init="Init()">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary" id="listDataPanel" ng-if="OpenFormUpdate == false">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Danh sách thành viên</h3>
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-default btn-sm pull-right" data-toggle="collapse" data-target=".search-form">
+                            <div class="collapse search-form">
+                                Tìm kiếm <i class="fa fa-chevron-up"></i>
+                            </div>
+                            <div class="collapse search-form in">
+                                Tìm kiếm <i class="fa fa-chevron-down"></i>
+                            </div>
+                        </button>
+                        <a href="javascript:void(0)" ng-click="getUserById(0)" class="btn btn-success btn-sm mg-right-10 pull-right"><i class="glyphicon glyphicon-plus"></i> Thêm mới</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- /.box-header -->
+                <!--// Form search -->
+                <div class="box-body no-padding search-form collapse mg-top-10 mg-bottom-10">
+                    <form ng-model="Search">
+                        <div class="col-lg-3 col-md-3">
+                            <div class="form-group">
+                                <label>Từ khóa</label>
+                                <input type="text" ng-keypress="keypressAction($event)" class="form-control input-sm" name="Search.Keyword" ng-model="Search.Keyword" placeholder="Tên hoặc tài khoản đăng nhập">
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2">
+                            <label>Loại tài khoản</label>
+                            <select class="form-control required input-sm" ng-options="option.Id as option.Name for option in ListUserType.ListStatus" ng-model="ListUserType.CurrentType" ng-change="doSearch()">
+                                <option value="" class="" selected="selected">--Lựa chọn--</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-2" style="margin-top: 22px">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-primary btn-sm" ng-click="doSearch()">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--// Form search -->
+                <!--// List data -->
+                <div class="box-body form-inline dt-bootstrap">
+
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+                                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+                            </div>
+                        </div>
+                        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+                            <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                                <uib-pagination class="pagination" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt10">
+                        <div class="col-sm-12 table-responsive">
+                            <table id="datatable" class="table table-striped" role="grid" aria-describedby="datatable_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th class="sorting" tabindex="0" style="width: 15%">Tên</th>
+                                        <th class="sorting" tabindex="1" style="width: 15%">Tài khoản</th>
+                                        <th class="sorting" tabindex="1" style="width: 18%">Email</th>
+                                        <th class="sorting" tabindex="2" style="width: 11%">Giới tính</th>
+                                        <th class="sorting" tabindex="3" style="width: 12%">Ngày Tạo</th>
+                                        <th class="sorting" tabindex="4" style="width: 13%">Trạng thái</th>
+                                        <th class="sorting" tabindex="5" style="width: 25%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr role="row" ng-repeat="item in ListData track by $index">
+                                        <td class="text-center">{{((page.currentPage - 1) * page.itemsPerPage) + $index+1}}</td>
+                                        <td>{{item.FullName}}</td>
+                                        <td>{{item.UserName}}</td>
+                                        <td>{{item.Email}}</td>
+                                        <td>{{item.GenderStr}}</td>
+                                        <td>{{item.CreatedDateStr}}</td>
+                                        <td> {{item.StatusBack}}</td>
+                                        <td>
+                                            <a ng-if="item.UserType != RoleManager.UserTopbank" href="javascript:;" ng-click="openCatePermission(item.UserId, item.UserName, item.UserType)" class="btn btn-sm btn-info pull-right" title="Cấp quyền truy cập"><i class="fa fa-shield"> </i></a>
+
+                                            <a ng-if="item.UserType == RoleManager.UserTopbank" href="javascript:;" class="pull-right" style="width: 30px; height: 30px;"></a>
+
+                                            <a href="javascript:;" ng-click="openResetPassword(item.UserId, item.FullName, item.Email)" class="btn btn-sm btn-info pull-right mg-right-5" title="Đặt lại mật khẩu"><i class="fa fa-key"> </i></a>
+
+                                            <a ng-if="item.Status != UsersStatus.Lock" class="btn btn-sm btn-danger pull-right mg-right-5" href="javascript:;" ng-click="updateStatus(item.UserId, item.Status)" title="Khóa tài khoản"><i class="fa fa-lock"></i></a>
+
+
+                                            <a ng-if="item.Status == UsersStatus.Lock" class="btn btn-sm btn-primary pull-right mg-right-5" href="javascript:;" style="width: 30px" ng-click="updateStatus(item.UserId, item.Status)" title="Mở khóa tài khoản"><i class="fa fa-unlock"></i></a>
+
+                                            <a href="javascript:;" class="btn btn-sm btn-info pull-right mg-right-5" style="" ng-click="getUserById(item.UserId)" title="Chỉnh sửa"><i class="fa fa-edit"> </i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="box-footer clearfix">
+                    <div class="row mg-top-19">
+                        <div class="col-sm-5">
+                            <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">
+                                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+                            </div>
+                        </div>
+                        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+                            <div class="dataTables_paginate paging_simple_numbers" id="datatable_paginate">
+                                <uib-pagination class="pagination" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--// List data -->
+
+            </div>
+        </div>
+
+        @Html.Partial("_UpdateUsers")
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="modelChangePass">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Đặt lại mật khẩu</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formResetPassword" name="formResetPassword" ng-model="ResetPassWordModel">
+                            <div class="row mg-bottom-10">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5">
+                                        Họ tên
+                                    </label>
+                                    <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+                                        <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{ResetPassWordModel.FullName}}</span>
+                                        @*<input type="text" readonly="readonly" class="form-control col-md-12 col-xs-12 input-sm" ng-value="ResetPassWordModel.FullName" ng-model="ResetPassWordModel.FullName">*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mg-bottom-10">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5">
+                                        Email
+                                    </label>
+                                    <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+                                        <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{ResetPassWordModel.Email}}</span>
+                                        @*<input type="text" readonly="readonly" class="form-control col-md-12 col-xs-12 input-sm" ng-value="ResetPassWordModel.Email" ng-model="ResetPassWordModel.Email">*@
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5">
+                                        Mật khẩu
+                                    </label>
+                                    <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+                                        <div class="row">
+                                            <div class="item col-md-9 col-sm-9 col-xs-9 pd-left-0">
+                                                <input type="text" id="txtResetPass" name="txtResetPass" required="required" class="form-control col-md-12 col-xs-12 input-sm" ng-model="ResetPassWordModel.NewPassword" maxlength="255" ng-minlength="6">
+                                            </div>
+                                            <div class="item col-md-3 col-sm-3 col-xs-3 pd-left-0 pd-right-0">
+                                                <button type="button" class="btn btn-block btn-info btn-sm" ng-click="autoGeneratePassword()"> Auto </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-disabled="formResetPassword.$invalid" ng-click="resetPassword()">Đổi mật khẩu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <div class="modal fade" tabindex="-1" role="dialog" id="modelCatePermission">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Cấp quyền truy cập</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCatePermission" name="formCatePermission" ng-model="CatePermissionModel">
+                            <div class="row mg-bottom-10">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 pd-top-5">
+                                        Tên người dùng
+                                    </label>
+                                    <div class="item col-md-9 col-sm-9 col-xs-12 pd-left-0">
+                                        <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{CatePermissionModel.Username}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mg-bottom-10">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12 pd-top-5">
+                                        Danh mục phân quyền  <span class="required">*</span>
+                                    </label>
+                                    <div class="item col-md-9 col-sm-9 col-xs-12 pd-left-0">
+                                        <select class="form-control required input-sm" required="required" ng-options="option.Id as option.Name for option in ListUserType.ListStatus" ng-model="ListUserType.CurrentType"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="changeCatePermission()">Cấp quyền</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+</section>
+
+

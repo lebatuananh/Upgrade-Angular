@@ -1,0 +1,147 @@
+﻿
+<div class="col-md-12 col-sm-12 col-xs-12" ng-if="OpenFormUpdate == true">
+    <div class="box box-primary" id="updatePanel" ng-controller="UpdateUsersController" ng-init="Init()">
+        <div class="box-header with-border">
+            <h2 ng-if="UsersActionModel.UserId > 0" class="box-title">Cập nhật thông tin thành viên</h2>
+            <h2 ng-if="UsersActionModel.UserId == 0 || UsersActionModel.UserId == null" class="box-title">Thêm mới thành viên</h2>
+            <div class="box-tools">
+                <button type="submit" class="btn btn-sm btn-success pull-right" ng-disabled="formUpdateCate.$invalid" ng-if="UsersActionModel != null && UsersActionModel.UserId > 0" ng-click="doUpdate()"><i class="fa fa-save"></i> Cập nhật</button>
+                <button type="submit" class="btn btn-sm btn-success pull-right" ng-disabled="formUpdateCate.$invalid" ng-if="UsersActionModel == null || UsersActionModel.UserId == 0 || UsersActionModel.UserId == null" ng-click="doUpdate()">Thêm mới</button>
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary pull-right mg-right-10" ng-click="cancleUpdate()"><i class="fa fa-remove"></i> Hủy</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="box-body">
+            <form id="formUpdateCate" autocomplete="off" data-parsley-validate="" name="formUpdateCate" class="form-horizontal form-label-left ng-pristine ng-valid" novalidate="">
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-4 col-xs-12">
+                        Tên đăng nhập <span class="required">*</span>
+                    </label>
+                    <div class="item col-md-8 col-sm-8 col-xs-12">
+                        <input type="text" ng-pattern="PatternUserName" ng-if="UsersActionModel.UserId == 0 || UsersActionModel.UserId == null" id="txtUserName" name="txtUserName" required="required" class="form-control col-md-7 col-xs-12" ng-model="UsersActionModel.UserName" maxlength="255">
+                        <span ng-if="UsersActionModel.UserId > 0" class="form-control bg-gray-light">{{UsersActionModel.UserName}}</span>
+                        <div class="no-pading-left col-md-12 col-sm-12 col-xs-12" ng-show="formUpdateCate.txtUserName.$error.pattern">
+                            <span class="red">Tên đăng nhập phải từ 6 ký tự trở lên và không được chứa ký tự đặc biệt và chữ có dấu.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" >
+                    <label class="control-label col-md-2 col-sm-4 col-xs-12">
+                        Loại tài khoản <span class="required">*</span>
+                    </label>
+                    <div class="col-md-8 col-sm-8 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select class="form-control required input-sm" required="required" ng-options="option.Id as option.Name for option in ListUserType.ListStatus" ng-model="UsersActionModel.UserType">
+                                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4 col-xs-12">
+                                Họ và Tên <span class="required">*</span>
+                            </label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <input type="text" id="txFullName" name="txtFullName" required="required" class="form-control col-md-12 col-xs-12" ng-model="UsersActionModel.FullName" maxlength="255">
+                                <div data-ng-if="UsersActionModel.FullName == '' || UsersActionModel.FullName == null">
+                                    <span class="text-red">Không được để trống</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4 col-xs-12">
+                                Email <span class="required">*</span>
+                            </label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <input type="text" id="txtEmail" name="txtEmail" @*ng-pattern="PatternEmail"*@ required="required" class="form-control col-md-12 col-xs-12" ng-model="UsersActionModel.Email" maxlength="100">
+                                <div class="" ng-show="formUpdateCate.txtEmail.$error.pattern">
+                                    <span class="text-red">Email không đúng định dạng</span>
+                                </div>
+                                <div data-ng-if="!formUpdateCate.txtEmail.$error.pattern && (UsersActionModel.Email == '' || UsersActionModel.Email == null)">
+                                    <span class="text-red">Không được để trống</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4 col-xs-12">
+                                Ngày sinh
+                            </label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <input type="text" id="txtDob" name="txtDob" class="form-control col-md-12 col-xs-12 datepicker-short" ng-model="UsersActionModel.BirthdayStr">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4 col-xs-12">
+                                Số điện thoại
+                            </label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <input type="text" ng-pattern="PatternPhone" id="txtPhoneNumber" name="txtPhoneNumber" class="form-control col-md-12 col-xs-12" ng-model="UsersActionModel.Mobile">
+                                <div class="" ng-show="formUpdateCate.txtPhoneNumber.$error.pattern">
+                                    <span class="text-red">Số điện thoại phải là số và từ 9 đến 12 số</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4 col-xs-12">
+                                Ảnh đại diện
+                            </label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <input type="button" style="display: block;" class="btn btn-success" value="Tải ảnh lên" ng-click="choseAvatar()">
+                                <div class="fl mg-top-10">
+                                    <div class="avatar-sq avatar-sq-90 avatar-view" ng-if="UsersActionModel.Avatar != '' && UsersActionModel.Avatar != null" ng-click="selectAvatar()">
+                                        <img id="avatarUsers" class="img-responsive" ng-src="{{UsersActionModel.Avatar}}" ng-alt="{{UsersActionModel.Avatar}}" ng-model="UsersActionModel.Avatar" />
+                                    </div>
+                                    <div class="avatar-sq avatar-sq-90 avatar-view" ng-if="UsersActionModel.Avatar == '' || UsersActionModel.Avatar == null" ng-click="selectAvatar()">
+                                        <img id="avatarUsers" class="img-responsive" ng-src="/Content/images/no-image.png" ng-alt="avatar" ng-model="UsersActionModel.Avatar" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-4 col-xs-12" for="rdoMale">
+                        Giới tính
+                    </label>
+                    <div class="item col-md-8 col-sm-8 col-xs-12">
+                        <div class="radio-inline">
+                            <label>
+                                <input id="rdoMale" type="radio" class="flat" name="Gender" checked="checked"> Nam
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input id="rdoFeMale" type="radio" class="flat" name="Gender"> Nữ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-4 col-xs-12">
+                        Địa chỉ
+                    </label>
+                    <div class="item col-md-8 col-sm-8 col-xs-12">
+                        <input type="text" id="txtAddress" name="txtAddress" class="form-control col-md-7 col-xs-12" ng-model="UsersActionModel.Address" maxlength="255">
+                    </div>
+                </div>                
+
+            </form>
+        </div>
+        <div class="box-footer clearfix">
+            <div class="pull-right">
+                <button type="submit" class="btn btn-sm btn-success pull-right" ng-disabled="formUpdateCate.$invalid" ng-if="UsersActionModel != null && UsersActionModel.UserId > 0" ng-click="doUpdate()"><i class="fa fa-save"></i> Cập nhật</button>
+                <button type="submit" class="btn btn-sm btn-success pull-right" ng-disabled="formUpdateCate.$invalid" ng-if="UsersActionModel == null || UsersActionModel.UserId == 0 || UsersActionModel.UserId == null" ng-click="doUpdate()">Thêm mới</button>
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary pull-right mg-right-10" ng-click="cancleUpdate()"><i class="fa fa-remove"></i> Hủy</a>
+            </div>
+        </div>
+    </div>
+</div>

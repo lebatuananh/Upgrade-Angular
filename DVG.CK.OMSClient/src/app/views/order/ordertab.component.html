@@ -1,0 +1,148 @@
+<tabset #staticTabs>
+  <tab (select)="onSelectTab($event, 'tab')" [active]="tab == 'tab'" *ngIf="Role == RolesEnum.CustomerService
+    || Role == RolesEnum.Admin">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-bar"></i> Tất cả &nbsp;<span *ngIf="Count.CountTab > 0" class="badge badge-warning my-font-size">{{Count.CountTab}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab1')" [active]="tab == 'tab1'" *ngIf="Role == RolesEnum.CustomerService
+    || Role == RolesEnum.Admin">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-edit"></i> Chưa duyệt &nbsp;<span *ngIf="Count.CountTab1 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab1}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab2')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin || Role == RolesEnum.Kitchen" [active]="tab == 'tab2'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-clock-o"></i> Chờ đẩy &nbsp;<span *ngIf="Count.CountTab2 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab2}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab3')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Kitchen
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab3'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-list"></i> Chờ nấu &nbsp;<span *ngIf="Count.CountTab3 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab3}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab4')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Kitchen
+                || Role == RolesEnum.KitchenManager
+                || Role == RolesEnum.Checkfood" [active]="tab == 'tab4'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-hourglass-half"></i> Đang nấu &nbsp;<span *ngIf="Count.CountTab4 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab4}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab5')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Cashier
+                || Role == RolesEnum.KitchenManager
+                || Role == RolesEnum.Checkfood" [active]="tab == 'tab5'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-cutlery"></i> Nấu xong &nbsp;<span *ngIf="Count.CountTab5 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab5}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab6')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Cashier
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab6'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-truck"></i> Đang giao &nbsp;<span *ngIf="Count.CountTab6 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab6}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab7')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab7'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-exclamation"></i> Giao thất bại &nbsp;<span *ngIf="Count.CountTab7 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab7}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab8')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab8'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-check-square-o"></i> Giao thành công &nbsp;<span *ngIf="Count.CountTab8 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab8}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab9')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab9'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-ban"></i> CSKH báo hủy &nbsp;<span *ngIf="Count.CountTab9 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab9}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab10')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin" [active]="tab == 'tab10'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-phone"></i> Bếp đã hủy&nbsp;<span *ngIf="Count.CountTab10 > 0" class="badge badge-warning my-font-size ">{{Count.CountTab10}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+  <tab (select)="onSelectTab($event, 'tab11')" *ngIf="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.KitchenManager" [active]="tab == 'tab11'">
+    <ng-template tabHeading>
+      <h5 class="font-weight-normal">
+        <i class="fa fa-trash"></i> Đã hủy &nbsp;<span *ngIf="Count.CountTab11 > 0" class="badge badge-warning my-font-size">{{Count.CountTab11}}</span>
+      </h5>
+    </ng-template>
+    <app-orderlist #orderlist [IndexModel]="IndexModel" [ListData]="ListData" [page]="page" [IsShowLoader]="IsShowLoader"
+                   (pageChanges)="pageChanges($event)" [SearchOrder]="SearchOrder" (updateSearchModel)="updateSearchModel($event)" (getCountModel)="getCountModel()">
+    </app-orderlist>
+  </tab>
+</tabset>

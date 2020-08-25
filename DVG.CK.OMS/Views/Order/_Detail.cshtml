@@ -1,0 +1,222 @@
+﻿<style>
+    .box-header {
+        padding-bottom: 0px;
+    }
+
+    .ln_solid {
+        margin: 10px 0;
+    }
+
+    .text-wrap {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .label-order {
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .pd-5 {
+        padding: 5px;
+    }
+</style>
+
+<div id="orderInfo" class="box">
+    <div class="box-header">
+        <div class="box-title">
+            <small class="text-wrap no-mg-top">Thông tin đơn hàng</small>
+            <div class="clearfix"></div>
+        </div>
+        <div class="box-tools mg-bottom-10">
+            <a ng-click="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+        </div>
+        <div class="clearfix"></div>
+        <div class="ln_solid"></div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="box-body">
+        <div class="row pd-5">
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-info"></i> ID đơn hàng : </span> {{ OrderDetail.OrderId }}</div>
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-barcode"></i> Mã đơn hàng : </span> {{ OrderDetail.Code }}</div>
+        </div>
+        <div class="row pd-5">
+            <div class="col-md-6">
+                <span class="label-order mg-right-5">
+                    <i class="fa fa-check-square-o"></i> Trạng thái đơn hàng:
+                </span>
+                <label ng-class="{' badge-dark': OrderDetail.Status == OrderStatusEnum.Inactive,
+                                  ' badge-default': OrderDetail.Status == OrderStatusEnum.Pending,
+                                  ' badge-secondary': OrderDetail.Status == OrderStatusEnum.PushToPOS,
+                                  ' badge-primary': OrderDetail.Status == OrderStatusEnum.KitchenAccept,
+                                  ' badge-info': OrderDetail.Status == OrderStatusEnum.KitchenDone,
+                                  ' badge-warning': OrderDetail.Status == OrderStatusEnum.Delivering,
+                                  ' badge-danger': OrderDetail.Status == OrderStatusEnum.Failure,
+                                  ' badge-success': OrderDetail.Status == OrderStatusEnum.Success,
+                                  ' badge-danger': OrderDetail.Status == OrderStatusEnum.Destroy,
+                                }" class="badge" style="padding: 10px; border-radius: .25rem;">
+                    {{OrderDetail.StatusStr}}
+                </label>
+
+                <label ng-if="OrderDetail.RequestType > 0" class="badge badge-danger" style="padding: 10px; border-radius: .25rem;">{{OrderDetail.RequestTypeName}}</label>
+
+            </div>
+            <div class="col-md-6">
+                <span class="label-order mg-right-5">
+                    <i class="fa fa-check-square-o"></i> Trạng thái giao hàng:
+                </span>                
+                <label ng-class="{' badge-dark': OrderDetail.DeliveryStatus == DeliveryStatusEnum.Default ,
+                                                     ' badge-default': OrderDetail.DeliveryStatus ==  DeliveryStatusEnum.Idle,
+                                                     ' badge-secondary': OrderDetail.DeliveryStatus ==  DeliveryStatusEnum.Asigning,
+                                                     ' badge-primary': OrderDetail.DeliveryStatus == DeliveryStatusEnum.Accepted ,
+                                                     ' badge-info': OrderDetail.DeliveryStatus == DeliveryStatusEnum.InProcess,
+                                                     ' badge-success': OrderDetail.DeliveryStatus == DeliveryStatusEnum.Completed ,
+                                                     ' badge-danger': OrderDetail.DeliveryStatus == DeliveryStatusEnum.Cancelled,
+
+                                                     }" class="badge" style="padding: 10px; border-radius: .25rem;">
+                    {{OrderDetail.DeliveryStatusStr}}
+                </label>
+            </div>
+        </div>
+        <div class="row pd-5" ng-if="OrderDetail.RequestType > 0">
+            <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-window-close"></i> Lý do hủy: </span> {{ OrderDetail.ReasonNote }}</div>
+        </div>
+    </div>
+</div>
+
+<div id="customerInfo" class="box" ng-if="Role != RolesEnum.Kitchen">
+    <div class="box-header">
+        <div class="box-title">
+            <small class="text-wrap no-mg-top">Thông tin khách hàng</small>
+            <div class="clearfix"></div>
+        </div>
+        <div class="ln_solid"></div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="box-body">
+        <div class="row pd-5">
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-user"></i> Tên khách hàng : </span> {{ OrderDetail.CustomerName }}</div>
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-phone-square"></i> SĐT : </span> {{ OrderDetail.CustomerPhone }}</div>
+        </div>
+        <div class="row pd-5">
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-map-marker"></i> Quận : </span> {{ OrderDetail.DistrictName }}</div>
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-file"></i> Hình thức giao hàng : </span> {{ OrderDetail.OrderTypeName }}</div>
+        </div>
+        <div class="row pd-5">
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-map-marker"></i> Phường : </span> {{ OrderDetail.WardName }}</div>
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-file-o"></i> Nguồn đơn hàng : </span> {{ OrderDetail.SourceTypeName }}</div>
+        </div>
+        <div class="row pd-5">
+            <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-location-arrow"></i> Địa chỉ giao hàng: </span> {{ OrderDetail.DeliveryAddressFull }}</div>
+        </div>
+    </div>
+</div>
+<div class="box">
+    <div class="box-header">
+        <div class="box-title">
+            <small class="text-wrap no-mg-top">Thông tin vận chuyển</small>
+            <div class="clearfix"></div>
+        </div>
+        <div class="ln_solid"></div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="box-body">
+        <div class="row pd-5">
+            <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-clock-o"></i> Giờ hẹn giao hàng : </span> {{ OrderDetail.DeliveryDateStr }}</div>
+        </div>
+        <div class="row pd-5">
+            <div class="col-md-12" ng-if="Role != RolesEnum.Kitchen"><span class="label-order mg-right-5"><i class="fa fa-clock-o"></i> Thời gian giao hàng dự kiến : </span> {{ OrderDetail.DeliveryEstimateTimeStr }}</div>
+        </div>
+        @*<div class="row pd-5" ng-if="Role != RolesEnum.Kitchen">
+            <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-money"></i> Phí vận chuyển : </span> {{ OrderDetail.DeliveryPriceStr }} đ</div>
+        </div>*@
+    </div>
+</div>
+<div class="row">
+    <div ng-class="Role != RolesEnum.Kitchen ? 'col-md-8' : 'col-md-12'">
+        <div id="otherInfo" class="box">
+            <div class="box-body">
+                <div class="row pd-5">
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-calendar"></i> Ngày tạo :</span> {{ OrderDetail.CreatedDateStr }}</div>
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-user-o"></i> Người tạo : </span> {{ OrderDetail.CreatedBy }}</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-calendar"></i> Ngày sửa cuối : </span> {{ OrderDetail.ModifiedDateStr }}</div>
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-user-o"></i> Người sửa cuối : </span> {{ OrderDetail.ModifiedBy }}</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-user-circle-o"></i> Thu ngân nhận tiền :</span> {{ OrderDetail.CashierReceive }}</div>
+                    <div class="col-md-6"><span class="label-order mg-right-5"><i class="fa fa-user-circle-o"></i> Thu ngân trả tiền :</span> {{ OrderDetail.CashierRefund }}</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-comment"></i> Ghi chú của khách hàng :</span> {{ OrderDetail.CustomerNote }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" ng-if="Role != RolesEnum.Kitchen">
+        <div id="totalInfo" class="box">
+            <div class="box-body">
+                <div class="row pd-5">
+                    <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-money"></i> Tổng tiền gốc : </span> {{ OrderDetail.OrderOriginPriceStr }} đ</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-money"></i> Tổng tiền thanh toán :</span> {{ OrderDetail.OrderPriceStr }} đ</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-12"><span class="label-order mg-right-5"><i class="fa fa-money"></i> Phí ship : </span> {{ OrderDetail.ShipFeeStr }} đ</div>
+                </div>
+                <div class="row pd-5">
+                    <div class="col-md-12"><span class="label-order mg-right-5"></span> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="productInfo" class="box">
+    <table class="table table-striped table-bordered table-responsive" style="font-size: 14px;">
+        <thead>
+            <tr role="row">
+                <th>#</th>
+                <th>Mã món</th>
+                <th>Tên món</th>
+                <th width="10%">Sô lượng</th>
+                <th>Giá gốc</th>
+                <th>Giá</th>
+                <th>Ghi chú</th>
+                <th>Tổng tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-if="OrderDetail.lstOrderDetailViewModel == null || OrderDetail.lstOrderDetailViewModel == []">
+                <td colspan="8">
+                    <p class="text-center">Không tìm thấy món ăn nào</p>
+                </td>
+            </tr>
+            <tr role="row" ng-repeat="item in OrderDetail.lstOrderDetailViewModel track by $index">
+                <td> {{ $index + 1 }} </td>
+                <td> {{ item.Code }} </td>
+                <td> {{ item.ProductName }} </td>
+                <td> {{ item.Quantity }} </td>
+                <td> {{ item.OriginPriceStr }} </td>
+                <td> {{ item.PriceStr }} </td>
+                <td> {{ item.Note }} </td>
+                <td> {{ item.TotalMoneyStr }} </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+<div class="box-header">
+    <div class="box-title">
+
+    </div>
+    <div class="box-tools mg-bottom-10">
+        <a ng-click="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+    </div>
+    <div class="clearfix"></div>
+</div>

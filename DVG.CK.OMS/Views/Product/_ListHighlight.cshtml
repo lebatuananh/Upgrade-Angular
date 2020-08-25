@@ -1,0 +1,62 @@
+﻿@using DVG.CK.OMS.Extensions;
+<div class="box-body no-padding">
+    <div class="row">
+        <div class="col-sm-12 table-responsive">
+            <table id="datatable" class="table table-striped">
+                <thead>
+                    <tr role="row">
+                        <th>#</th>
+                        <th style="width: 75%">Sản phẩm nổi bật</th>
+                        <th style="width: 25%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-if="ListHighlight == ''">
+                        <td colspan="5">
+                            <p class="text-center">Không tìm thấy bài viết nào</p>
+                        </td>
+                    </tr>
+                    <tr role="row" ng-repeat="item in ListHighlight track by $index">
+                        <td class="text-center">{{((page.currentPage - 1) * page.itemsPerPage) + $index+1}}</td>
+                        <td class="sorting_1">
+                            <div class="col-md-4 col-sm-4">
+                                <!-- Current avatar -->
+                                <div class="profile_img avatar-sq avatar-sq-90 avatar-view">
+                                    <a href="#" class="fl avatarindex block">
+                                        <img class="img-responsive" ng-src="{{item.AvatarStr}}" alt="{{item.Name}}">
+                                    </a>
+                                </div>
+                                <!-- end of image -->
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <h4 class="tile_info">
+                                    <a href="{{item.FullUrl}}" target="_blank" ng-if="item.StatusOfProduct.IsApproved">{{item.Name}}</a>
+                                    <a href="javascript:void(0);" ng-if="!item.StatusOfProduct.IsApproved">{{item.Name}}</a>
+                                </h4>
+                                <div>
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <span class="label" ng-class="item.StatusOfProduct.IsApproved ? 'label-primary' : 'label-danger'">{{item.StatusStr}}</span>
+                                        </div>
+                                        <div class="row">
+                                            Ngày xuất bản: {{item.PublishedDateStr}}
+                                        </div>
+                                        <div class="row">
+                                            Danh mục: {{item.CategoryName}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <a ng-click="doRemoveHighlight(item.EncryptId);" class="btn btn-danger btn-xs" title="Xóa"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

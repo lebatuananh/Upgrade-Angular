@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "DVG.CK.Services": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Testing"
+      }
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

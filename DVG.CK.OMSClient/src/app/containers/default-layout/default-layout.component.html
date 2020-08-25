@@ -1,0 +1,89 @@
+<app-header [navbarBrandRouterLink]="['/']" [fixed]="true" [navbarBrandFull]="{
+    src: 'assets/img/brand/tasty-kitchen.png',
+    width: 50,
+    height: 45,
+    alt: 'OMS Tasty Kitchen'
+  }" [navbarBrandMinimized]="{
+    src: 'assets/img/brand/tasty-kitchen.png',
+    width: 33,
+    height: 30,
+    alt: 'OMS Tasty Kitchen'
+  }" [sidebarToggler]="'lg'" [asideMenuToggler]="false" [mobileAsideMenuToggler]="false">
+  <ul class="nav navbar-nav d-md-down-none" *ngIf="IsShowSystemMenu">
+    <li class="nav-item px-3">
+      <a class="nav-link" routerLink="/user/list">Quản lý tài khoản</a>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item dropdown"  dropdown placement="bottom right">
+      <a class="nav-link" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+      dropdownToggle (click)="(false)">
+        <i class="icon-bell" [hidden]="!IsShowNotifyAccount"></i><span class="badge badge-pill badge-danger" [hidden]="NotifyAccountCount === 0">{{NotifyAccountCount}}</span></a>     
+        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+          <div class="dropdown-header text-center"><strong>Thông báo</strong></div>
+          <a class="dropdown-item" href="javascript:void(0);" (click)="openModal(templateConfirm,'clearAllNotifyAccount')"><i class="fa fa-trash"></i>Xóa tất cả</a>
+        </div>        
+    </li>
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+        dropdownToggle (click)="(false)">
+        <!-- <img src="assets/img/avatars/icon-user-default_v2.png" class="img-avatar" alt="staff"/> -->
+        <b class="text-danger mr-1">{{ UserName }}</b>
+        <i class="text-danger fa fa-caret-down mr-5"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <div class="dropdown-header text-center"><strong>Tùy chỉnh</strong></div>
+        <a class="dropdown-item" [routerLink]="['/account/changepassword/']" target="_blank"><i
+            class="fa fa-user"></i>Đổi mật khẩu</a>
+        <a class="dropdown-item" href="javascript:void(0);" (click)="doLogout()"><i class="fa fa-lock"></i> Đăng
+          xuất</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <cui-breadcrumb>
+      <li class="breadcrumb-menu d-md-down-none">
+
+      </li>
+    </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+      <notifier-container></notifier-container>
+      <ngx-notifier [allowDuplicates]="fasle" [allowHTML]="true" [className]="myCustomClassName" [duration]="1000000"
+        [disableAnimations]="true" [dismissOnClick]="false" [insertOnTop]="true"></ngx-notifier>
+    </div>
+    <!-- /.container-fluid -->
+  </main>
+  <ng-template #templateConfirm>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Xác nhận thao tác
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-lg col-md-6 col-lg-6 col-xs-6" (click)="doConfirm()">
+        Xác
+        nhận
+      </button>
+      <button type="button" class="btn btn-danger btn-lg col-md-6 col-lg-6 col-xs-6"
+              (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+</div>
+<app-footer>
+  <span><a href="/">OMS Tasty Kitchen</a> &copy; 2020 All rights reserved.</span>
+</app-footer>

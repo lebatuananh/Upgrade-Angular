@@ -1,0 +1,42 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card card-accent-success">
+        <div class="card-header">
+          <!-- <h2>Welcome {{UserName}}. Have a nice working day!</h2> -->
+          <h2><i class="fa fa-bell" style="color: #ffc107"></i> Xin chào {{UserName}}. Chúc bạn có một ngày may mắn và thành công!</h2>
+        </div>
+        <div class="card-body" *ngIf="lstNotice != null && lstNotice.length > 0">
+          <fieldset *ngFor="let item of lstNotice |
+          paginate
+          : {
+              itemsPerPage: noticeParam.PageSize,
+              currentPage: noticeParam.PageIndex,
+              totalItems: totalItems
+            }" style="width: 100%; margin-bottom: 10px">
+            <legend style="font-size: 13px; width:auto; font-weight: bold "><i class="fa fa-calendar"></i>
+              {{item.CreatedDateStr}}</legend>
+            <span [innerHTML]="item.Content"></span>
+          </fieldset>
+          <!-- paging -->
+          <div *ngIf="totalItems > 0 && totalItems > noticeParam.PageSize">
+            <div class="float-left mr-3">
+              <label>
+                Page {{ totalItems > 0 ? noticeParam.PageIndex : 0 }}/{{totalPage}}(Total record: {{ totalItems }})
+              </label>
+            </div>
+            <div class="float-right mr-3">
+              <pagination-controls (pageChange)="pageChanged($event)" maxSize="10" directionLinks="true" autoHide="true"
+                responsive="true" previousLabel="Previous" nextLabel="Next" screenReaderPaginationLabel="Pagination"
+                screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+              </pagination-controls>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="lstNotice != null && lstNotice.length == 0">
+          <span>There isn't any notice!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

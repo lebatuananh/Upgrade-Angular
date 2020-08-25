@@ -1,0 +1,183 @@
+
+<ngx-loading [show]="IsShowLoader"
+             [config]="{
+    animationType: NgxLoadingAnimationTypes.threeBounce,
+    backdropBorderRadius: '3px'
+  }"
+             [template]="LoadingTemplate">
+</ngx-loading>
+<accordion class="cursor-pointer">
+  <accordion-group [isOpen]="IsOpen"
+                   (isOpenChange)="onChangeIsOpen($event)"
+                   class="animated fadeIn"
+                   style="transition-duration: 0.6s;">
+    <span accordion-heading>
+      <i class="fa fa-search" style="margin-right: 0.5rem;"></i>
+      <span class="card-title">Search notification </span>
+      <i *ngIf="IsOpen"
+         class="icons icon-arrow-down fsize10"></i>
+      <i *ngIf="!IsOpen"
+         class="icons icon-arrow-up fsize10"></i>
+    </span>
+    <form class="cursor-default" #searchForm="ngForm">
+      <div class="row">
+        <div class="form-group col-md-4">
+          <div class="input-group">
+            <input name="txtKeyword"
+                   type="text"
+                   class="form-control"
+                   [(ngModel)]="SearchModel.Keyword"
+                   placeholder="Notification title..."
+                   (keydown.enter)="search(1)" />
+          </div>
+        </div>
+        <!--Brand-->
+        <div class="form-group col-md-3">
+          <div class="input-group dev-search">
+            <ng-select name="ddlBrand"
+                       [items]="IndexModel.ListBrand"
+                       bindLabel="BrandName"
+                       bindValue="BrandId"
+                       [(ngModel)]="SearchModel.BrandId"
+                       placeholder="--Select Brand--"
+                       (change)="onChangeBrand()">
+            </ng-select>
+            <div class="input-group-append"><span class="input-group-text"><i class="fa fa-list"></i></span></div>
+          </div>
+        </div>
+        <!--Model-->
+        <div class="form-group col-md-3">
+          <div class="input-group dev-search">
+            <ng-select name="ddlModel"
+                       [items]="ListModelToBind"
+                       bindLabel="ModelName"
+                       bindValue="ModelId"
+                       [(ngModel)]="SearchModel.ModelId"
+                       placeholder="--Select Model--"
+                       (change)="search(1)">
+            </ng-select>
+            <div class="input-group-append"><span class="input-group-text"><i class="fa fa-list"></i></span></div>
+          </div>
+        </div>
+        <!--Search-->
+        <div class="form-group col-md-2">
+          <input class="btn btn-primary"
+                 type="button"
+                 value="Search"
+                 id="btnSearch"
+                 (click)="search(1)" />
+        </div>
+      </div>
+    </form>
+  </accordion-group>
+</accordion>
+
+<div class="card card-accent-primary">
+  <div class="card-header">
+    <i class="fa fa-list"></i>
+    <span class="card-title">List notification </span>
+    <a class="btn btn-success float-right btn-sm" routerLink="/notification/add"
+       queryParamsHandling="merge"
+       href="javascript:void(0);"
+       target="_blank">Add new</a>
+  </div>
+  <div class="card-body">
+    <div>
+      <div class="float-left mr-3">
+        <label>
+          Page {{ SearchModel.PageIndex }}/{{ TotalPage }} (Total record:
+          {{ TotalItems }})
+        </label>
+      </div>
+      <div class="float-right mr-3">
+        <pagination-controls class="pagination-md"
+                             (pageChange)="pageChange($event)"
+                             maxSize="10"
+                             directionLinks="true"
+                             autoHide="true"
+                             responsive="true"
+                             previousLabel="Previous"
+                             nextLabel="Next"
+                             screenReaderPaginationLabel="Pagination"
+                             screenReaderPageLabel="page"
+                             screenReaderCurrentLabel="You're on page">
+        </pagination-controls>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th class="text-center">
+              No.
+            </th>
+            <th>
+              Title
+            </th>
+            <th>
+              Brand
+            </th>
+            <th>
+              Model
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="
+              let i = index;
+              let item;
+              of: (ListNotification | paginate
+                  : {
+                      itemsPerPage: SearchModel.PageSize,
+                      currentPage: SearchModel.PageIndex,
+                      totalItems: TotalItems
+                    })
+            ">
+            <td class="text-center">
+              {{ (SearchModel.PageIndex - 1) * SearchModel.PageSize + i + 1 }}
+            </td>
+            <td>
+              {{item.Title}}
+            </td>
+            <td>
+              {{item.BrandName}}
+            </td>
+            <td>
+              {{item.ModelName}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="float-left mr-3">
+        <label>Page{{ SearchModel.PageIndex }}/{{ TotalPage }}(Total record:{{ TotalItems }})</label>
+      </div>
+      <div class="float-right mr-3">
+        <pagination-controls (pageChange)="pageChange($event)"
+                             maxSize="10"
+                             directionLinks="true"
+                             autoHide="true"
+                             responsive="true"
+                             previousLabel="Previous"
+                             nextLabel="Next"
+                             screenReaderPaginationLabel="Pagination"
+                             screenReaderPageLabel="page"
+                             screenReaderCurrentLabel="You're on page">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #confirmTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Confirm</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="ModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Do you really want to delete this notification ?
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="deteleNotification()">Yes</button>
+    <button type="button" class="btn btn-danger" (click)="ModalRef.hide()">No</button>
+  </div>
+</ng-template>

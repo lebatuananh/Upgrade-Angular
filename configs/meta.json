@@ -1,0 +1,54 @@
+﻿{
+  "MetaConfig": {
+    "Meta": [
+      {
+        "Url": "/",
+        "Title": "Yến Chân Long",
+        "Description": "Yến Chân Long",
+        "Keyword": "yến chân long"
+      },
+      {
+        "Url": "lien-he",
+        "Title": "Liên hệ",
+        "Description": "Liên hệ với chúng tôi",
+        "Keyword": "yến chân long"
+      },
+      {
+        "Url": "ve-chung-toi",
+        "Title": "Về chúng tôi",
+        "Description": "Liên hệ với chúng tôi",
+        "Keyword": "yến chân long"
+      },
+      {
+        "Url": "mon-ngon-tu-yen",
+        "Title": "Món ngon từ Yến",
+        "Description": "Món ngon từ Yến",
+        "Keyword": "yến chân long"
+      },
+      {
+        "Url": "kien-thuc-ve-yen",
+        "Title": "Kiến thức về Yến",
+        "Description": "Kiến thức về Yến",
+        "Keyword": "yến chân long"
+      },
+      {
+        "Url": "yen-tho",
+        "Title": "Yến thô",
+        "Description": "Yến thô",
+        "Keyword": "yến chân long, yến thô"
+      },
+      {
+        "Url": "yen-tinh-che",
+        "Title": "Yến tinh chế",
+        "Description": "Yến tinh chế",
+        "Keyword": "yến chân long, yến tinh chế"
+      },
+      {
+        "Url": "yen-chung",
+        "Title": "Yến chưng",
+        "Description": "Yến chưng",
+        "Keyword": "yến chân long, yến chưng"
+      }
+    ]
+  }
+}

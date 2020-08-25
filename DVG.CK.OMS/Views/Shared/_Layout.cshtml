@@ -1,0 +1,67 @@
+﻿@using DVG.CK.OMS.Extensions;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/portal_styles_plugins.min.css" rel="stylesheet" />
+    <link href="~/Content/portal_styles.min.css" rel="stylesheet" />
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/ckeditor/config-short.js"></script>
+    <script src="~/Scripts/portal_scripts_plugins.min.js"></script>
+    <script src="~/Scripts/portal_scripts_angular.min.js"></script>
+    <script src="~/Scripts/ModulesExtension.js"></script>
+    <script src="~/Scripts/portal_scripts.min.js?v=2"></script>
+</head>
+<body class="hold-transition fixed skin-blue sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="/" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">OMS Cloud Kitchen</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>OMS Cloud Kitchen </b></span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+
+                <!--User info-->
+                @Html.Action("AccountInfo", "Account")
+            </nav>
+        </header>
+
+        <!-- =============================================== -->
+        <!-- Left side column. contains the sidebar -->
+        @Html.Partial("_LeftMenu")
+        <!-- =============================================== -->
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            @RenderBody()
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.0.0.1
+            </div>
+            <strong>Copyright &copy; 2020&nbsp;<a>Cloud Kitchen</a>.</strong> All rights
+            reserved.
+        </footer>
+    </div>
+</body>
+</html>

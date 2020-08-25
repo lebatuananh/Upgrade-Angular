@@ -1,0 +1,13 @@
+2020-08-25 15:39:04.9973 Info Message Template Auto Format enabled
+2020-08-25 15:39:05.0154 Info Loading assembly: NLog.Web.AspNetCore
+2020-08-25 15:39:05.0431 Info Adding target ConsoleTarget(Name=console)
+2020-08-25 15:39:05.0491 Info Adding target FileTarget(Name=allfile)
+2020-08-25 15:39:05.0578 Warn Skipping unrecognized property 'serverVariable=HTTP_URL` for ${aspnet-request} (NLog.Web.LayoutRenderers.AspNetRequestValueLayoutRenderer)
+2020-08-25 15:39:05.0702 Info Adding target KafkaAppender(Name=logging_error)
+2020-08-25 15:39:05.0709 Warn Skipping unrecognized property 'serverVariable=HTTP_URL` for ${aspnet-request} (NLog.Web.LayoutRenderers.AspNetRequestValueLayoutRenderer)
+2020-08-25 15:39:05.0709 Info Adding target KafkaAppender(Name=logging_context)
+2020-08-25 15:39:05.0709 Info Adding target KafkaAppender(Name=logging_info)
+2020-08-25 15:39:05.0709 Info Adding target NullTarget(Name=blackHole)
+2020-08-25 15:39:05.0950 Info Validating config: TargetNames=logging_error, logging_info, blackHole, logging_context, ConfigItems=265, FilePath=/home/lebatuananh/Documents/Project/MyProject/kitchen-oms/DVG.CK.OMS.PublicApi/bin/Debug/netcoreapp3.1/nlog.config
+2020-08-25 15:39:05.1003 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: console
+2020-08-25 15:39:05.1003 Warn Unused target detected. Add a rule for this target to the configuration. TargetName: allfile

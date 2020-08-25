@@ -1,0 +1,180 @@
+﻿@using DVG.WIS.Utilities;
+@using DVG.WIS.Core;
+@{
+    Layout = null;
+    ViewBag.Title = "Hóa đơn";
+    var Order = @Model as DVG.WIS.PublicModel.OrderViewModel;
+    var now = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+}
+<!DOCTYPE html>
+<html lang="vi" xml:lang="vi">
+<head>
+    <title>Hóa đơn</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body { max-width: 600px; margin: 0 auto; padding-top: 10px; padding-bottom: 10px; font-family: Tahoma; color: #000; font-size: 20px; background: #00adef; }
+
+        h1, h2, h3 { text-transform: uppercase; }
+
+        h1, h2, h3, h4, h5, h6 { margin: 5px; padding: 0; }
+
+        .ticket { width: calc(100% - 50px); padding: 25px; margin: 0 auto; background: #fff; }
+
+            .ticket .header { display: block; }
+
+                .ticket .header .h-left { width: 40%; display: inline-block; text-align: left; vertical-align: middle; }
+
+                    .ticket .header .h-left img { width: 80%; text-align: left; }
+
+                .ticket .header .h-right { width: 58%; text-align: center; display: inline-block; vertical-align: middle; }
+
+            .ticket .center { }
+
+            .ticket .footer { }
+
+        .mgt2 { margin-top: 2px !important; }
+
+        .mgb2 { margin-bottom: 2px !important; }
+
+        .mgt5 { margin-top: 5px !important; }
+
+        .mgb5 { margin-bottom: 5px !important; }
+
+        .note { font-size: 20px; }
+
+        .line { background-color: #000; height: 1px; line-height: 1px; width: 100%; margin-top: 5px; margin-bottom: 5px; }
+
+        .dot { background: none; height: 1px; line-height: 1px; width: 100%; margin-top: 5px; margin-bottom: 5px; border-top: dotted 1px #000; }
+
+        .number { text-align: right !important; }
+
+        .bold { font-weight: bold !important; }
+
+        .font-normal { font-weight: normal !important; }
+
+        .align-center { text-align: center !important; }
+
+        .align-right { text-align: right !important; }
+
+        .fl { float: left; }
+
+        .fr { float: right; }
+
+        .floatright { right: 30px; position: absolute; }
+
+        .floatleft { left: 30px; position: absolute; }
+
+        .mgl-50 { margin-left: 50px; }
+
+        .content { }
+
+        .title { text-align: center; text-transform: uppercase; }
+
+        .ticket-header { }
+
+            .ticket-header p { margin-bottom: 5px; margin-top: 5px; }
+
+            .ticket-header .col-left { display: inline-block; width: 65%; text-align: left; }
+
+            .ticket-header .col-right { display: inline-block; width: 33%; text-align: right; }
+
+            .ticket-header .col-full { width: 100%; }
+
+        .grid-cashier { }
+
+            .grid-cashier .row { width: 100%; padding-top: 10px; }
+
+            .grid-cashier .head { width: 100%; font-weight: bold; }
+
+            .grid-cashier .body { width: 100%; }
+
+            .grid-cashier .col { display: inline-block; overflow: hidden; word-wrap: break-word; vertical-align: top; text-align: left; }
+
+            .grid-cashier .col-full { width: 90%; }
+
+            .grid-cashier .col-ordinal { width: 20px; text-align: center !important; }
+
+            .grid-cashier .col-name { width: 260px; }
+
+            .grid-cashier .col-qty { width: 40px; text-align: center !important; }
+
+            .grid-cashier .col-note { width: 200px; }
+
+            .grid-cashier .col-price { width: 100px; text-align: center !important; }
+
+            .grid-cashier .col-discount { width: 20px; text-align: right !important; }
+
+            .grid-cashier .col-duatotal { width: 100px; text-align: right !important; }
+
+            .grid-cashier .row-foot { text-align: right; padding-top: 8px; }
+
+            .grid-cashier .w-price-name { width: 380px; }
+
+            .grid-cashier .w-price { width: 160px; }
+    </style>
+</head>
+<body>
+    @Html.Raw("_____BEGIN_TICKET_____")
+    @Html.Raw("_____NUMBER_PAGE_4_____")
+    <div class="ticket">
+        <div class="header">
+            <div class="h-left">
+                <img src="@AppSettings.Instance.GetString(Const.ClientDomain)/assets/img/brand/tasty-kitchen.png" />
+            </div>
+            <div class="h-right">
+                <h3 class="mgt2 mgb2">Tasty Kitchen</h3>
+                <p class="mgt2 mgb2">53 Lê Anh Xuân, Phường Bến Thành, Quận 1, TP Hồ Chí Minh</p>
+                <h4 class="mgt2">1900 633 818</h4>
+            </div>
+        </div>
+        <div class="content">
+            <h4 class="title">HÓA ĐƠN BÁN HÀNG</h4>
+            <br />
+            <div class="ticket-header">
+                <div class="col-left">
+                    <p>Ngày tạo: @now</p>
+                </div>
+                <div class="col-right">
+                    <p>HĐ: @Order.OrderId</p>
+                </div>
+                <br />
+            </div>
+            <div class="dot mgb5"></div>
+
+            <div class="grid-cashier">
+                <div class="head">
+                    <div class="col col-name">Mặt hàng</div>
+                    <div class="col col-ordinal">&nbsp;</div>
+                    <div class="col col-qty">SL</div>
+                    <div class="col col-note">Ghi chú</div>
+                </div>
+                <div class="body">
+                    @{int index = 1;}
+                    @foreach (var item in Order.lstOrderDetailViewModel)
+                    {
+                        <div class="row">
+                            <div class="col col-ordinal">@index</div>
+                            <div class="col col-name">@item.ProductName</div>
+                            <div class="col col-qty">@item.Quantity</div>
+                            <div class="col col-note">@item.Note</div>
+                        </div>
+                        index++;
+                    }
+                    <div class="dot"></div>
+                </div>
+            </div>
+            <br />
+        </div>
+        <div class="footer">
+            <div class="dot"></div>
+            <div class="align-center">
+                <br />
+                <h5 class="mgb2">Tasty Kitchen</h5>
+            </div>
+        </div>
+    </div>
+    @Html.Raw("_____END_TICKET_____")
+</body>
+</html>

@@ -1,0 +1,401 @@
+<ngx-loading [show]="IsShowLoader" [config]="{
+    animationType: NgxLoadingAnimationTypes.wanderingCubes,
+    backdropBorderRadius: '3px'
+  }" [template]="LoadingTemplate">
+</ngx-loading>
+<ng-container>
+  <accordion class="cursor-pointer">
+    <accordion-group [isOpen]="IsOpen"
+                     (isOpenChange)="onChangeIsOpen($event)"
+                     class="animated fadeIn"
+                     style="transition-duration: 0.6s;">
+      <span accordion-heading>
+        <i class="fa fa-search" style="margin-right: 0.5rem;"></i>
+        <span class="card-title"> Tìm kiếm </span>
+        <i *ngIf="IsOpen"
+           class="icons icon-arrow-up fsize10"></i>
+        <i *ngIf="!IsOpen"
+           class="icons icon-arrow-down fsize10"></i>
+      </span>
+      <form class="row cursor-default" #searchForm="ngForm">
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="label-bold">Từ khóa</label>
+            <input type="text" class="form-control input-sm" name="Search.Keyword" (keydown.enter)="searchUsers(1)" [(ngModel)]="SearchUser.Keyword" placeholder="Tên hoặc tài khoản đăng nhập">
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="form-group">
+            <label class="label-bold">Loại tài khoản</label>
+            <ng-select name="ddlUserType"
+                       id="ddlUserType"
+                       [items]="ListUserType.ListStatus"
+                       bindLabel="Name"
+                       bindValue="Id"
+                       [(ngModel)]="ListUserType.CurrentType"
+                       placeholder="-- Lựa chọn --">
+            </ng-select>
+          </div>
+        </div>
+        <div class="form-group col-lg-2 col-md-2">
+          <label></label>
+          <button style="width: 100px !important;" type="button" class="form-control btn btn-primary btn-sm btn-search-bt w-100" (click)="searchUsers(1)">Tìm kiếm</button>
+        </div>
+      </form>
+    </accordion-group>
+  </accordion>
+  <section class="content">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="box box-primary" id="listDataPanel">
+
+          <div class="card card-accent-primary">
+            <div class="card-header">
+              <i class="fa fa-list"></i>
+              <span class="card-title">Danh sách tài khoản</span>
+              <input class="btn btn-success float-right"
+                     value="Thêm mới"
+                     type="button"
+                     (click)="openUpdate(templateUpdate, 0)" />
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="float-left mr-3">
+                  <label>
+                    Bạn đang ở trang {{ page.TotalItem > 0 ? page.CurrentPage : 0 }}/{{
+                page.TotalPage > 0 ? page.TotalPage : 0
+                    }}
+                    (Có tổng {{ page.TotalItem > 0 ? page.TotalItem : 0 }} bản ghi)
+                  </label>
+                </div>
+                <div class="float-right mr-3">
+                  <pagination-controls class="pagination-md" (pageChange)="pageChange($event)" maxSize="10" directionLinks="true"
+                                       autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+                                       screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+                                       screenReaderCurrentLabel="You're on page">
+                  </pagination-controls>
+                </div>
+                <table id="datatable" class="table table-striped" role="grid" aria-describedby="datatable_info">
+                  <thead>
+                    <tr role="row">
+                      <th>#</th>
+                      <th class="sorting" tabindex="0" style="width: 15%">Tên</th>
+                      <th class="sorting" tabindex="1" style="width: 15%">Tài khoản</th>
+                      <th class="sorting" tabindex="1" style="width: 18%">Email</th>
+                      <th class="sorting" tabindex="2" style="width: 11%">Giới tính</th>
+                      <th class="sorting" tabindex="3" style="width: 12%">Ngày Tạo</th>
+                      <th class="sorting" tabindex="4" style="width: 13%">Trạng thái</th>
+                      <th class="sorting" tabindex="5" style="width: 25%"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr role="row" *ngFor="let i = index; let item of: ListData
+                        | paginate
+                        : {
+                            itemsPerPage: page.PageSize,
+                            currentPage: page.CurrentPage,
+                            totalItems: page.TotalItem
+                          }">
+                      <td class="text-center">{{(page.CurrentPage - 1) * page.PageSize + i + 1}}</td>
+                      <td>{{item.FullName}}</td>
+                      <td>{{item.UserName}}</td>
+                      <td>{{item.Email}}</td>
+                      <td>{{item.GenderStr}}</td>
+                      <td>{{item.CreatedDateStr}}</td>
+                      <td> {{item.StatusBack}}</td>
+                      <td>
+                        <a href="javascript:;" (click)="openCatePermission(templateCatePermission, item)" class="btn btn-sm btn-info pull-right" title="Cấp quyền truy cập"><i class="fa fa-shield"> </i></a>
+
+                        <!-- <a href="javascript:;" class="pull-right" style="width: 30px; height: 30px;"></a>-->
+
+                        <a href="javascript:;" (click)="openResetPassword(templateResetPassword, item)" class="btn btn-sm btn-info pull-right mg-right-5" title="Đặt lại mật khẩu"><i class="fa fa-key"> </i></a>
+
+                        <a *ngIf="item.Status != UsersStatus.Lock" class="btn btn-sm btn-danger pull-right mg-right-5" href="javascript:;" (click)="openModalConfirm(templateConfirm, item, 'khóa')" title="Khóa tài khoản"><i class="fa fa-lock"></i></a>
+
+
+                        <a *ngIf="item.Status == UsersStatus.Lock" class="btn btn-sm btn-primary pull-right mg-right-5" href="javascript:;" style="width: 30px" (click)="openModalConfirm(templateConfirm, item, 'mở khóa')" title="Mở khóa tài khoản"><i class="fa fa-unlock"></i></a>
+
+                        <a href="javascript:;" class="btn btn-sm btn-info pull-right mg-right-5" style="" (click)="openUpdate(templateUpdate, item.UserId)" title="Chỉnh sửa"><i class="fa fa-edit"> </i></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="float-left mr-3">
+                  <label>
+                    Bạn đang ở trang {{ page.TotalItem > 0 ? page.CurrentPage : 0 }}/{{
+                page.TotalPage > 0 ? page.TotalPage : 0
+                    }}
+                    (Có tổng {{ page.TotalItem > 0 ? page.TotalItem : 0 }} bản ghi)
+                  </label>
+                </div>
+                <div class="float-right mr-3">
+                  <pagination-controls class="pagination-md" (pageChange)="pageChange($event)" maxSize="10" directionLinks="true"
+                                       autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+                                       screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+                                       screenReaderCurrentLabel="You're on page">
+                  </pagination-controls>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!--// List data -->
+
+        </div>
+      </div>
+
+
+
+    </div>
+  </section>
+
+  <ng-template #templateConfirm>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Xác nhận thao tác
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      Bạn có chắc chắn muốn {{message}} tài khoản ?
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-lg col-md-6 col-lg-6 col-xs-6" (click)="confirm()">
+        Xác
+        nhận
+      </button>
+      <button type="button" class="btn btn-danger btn-lg col-md-6 col-lg-6 col-xs-6"
+              (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #templateResetPassword>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Đặt lại mật khẩu
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5 label-bold">
+          Họ tên
+        </label>
+        <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+          <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{ResetPassWordModel.FullName}}</span>
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5 label-bold">
+          Email
+        </label>
+        <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+          <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{ResetPassWordModel.Email}}</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="col-md-4 col-sm-4 col-xs-12 pd-top-5 label-bold">
+          Mật khẩu
+        </label>
+        <div class="col-md-8 col-sm-8 col-xs-12 pd-left-0">
+          <div class="row">
+            <div class="item col-md-9 col-sm-9 col-xs-9 pd-left-0">
+              <input type="text" id="txtResetPass" name="txtResetPass" required="required" class="form-control col-md-12 col-xs-12 input-sm" [(ngModel)]="ResetPassWordModel.NewPassword" maxlength="255" minlength="6" placeholder="Nhập mật khẩu mới">
+            </div>
+            <div class="item col-md-3 col-sm-3 col-xs-3 pd-left-0 pd-right-0">
+              <button type="button" class="btn btn-block btn-info btn-sm" (click)="autoGeneratePassword()" style="height: 100%"> Auto </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-md" (click)="resetPassword()">
+        Đổi mật khẩu
+      </button>
+      <button type="button" class="btn btn-danger btn-md"
+              (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #templateCatePermission>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Cấp quyền truy cập
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5 label-bold">
+          Tên người dùng
+        </label>
+        <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+          <span class="item-readonly col-md-12 col-sm-12 col-xs-12 form-control bg-gray-light">{{CatePermissionModel.Username}}</span>
+        </div>
+      </div>
+
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-4 col-sm-4 col-xs-12 pd-top-5 label-bold">
+          Danh mục phân quyền  <span class="required">*</span>
+        </label>
+        <div class="item col-md-8 col-sm-8 col-xs-12 pd-left-0">
+          <ng-select name="ddlUserType"
+                     id="ddlUserType"
+                     [items]="ListUserType.ListStatus"
+                     bindLabel="Name"
+                     bindValue="Id"
+                     [(ngModel)]="ListUserType.CurrentType"
+                     placeholder="-- Lựa chọn --">
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-md" (click)="changeCatePermission()">
+        Cấp quyền
+      </button>
+      <button type="button" class="btn btn-danger btn-md"
+              (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #templateUpdate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left" *ngIf="UsersActionModel.UserId > 0">
+        Cập nhật thông tin thành viên
+      </h4>
+      <h4 class="modal-title pull-left" *ngIf="UsersActionModel.UserId == 0">
+        Thêm mới thành viên
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Tên đăng nhập <span class="required text-danger">*</span>
+        </label>
+        <div class="item col-md-10 col-sm-8 col-xs-12">
+          <input type="text" ng-pattern="PatternUserName" *ngIf="UsersActionModel.UserId == 0 || UsersActionModel.UserId == null" id="txtUserName" name="txtUserName" required="required" class="form-control col-md-7 col-xs-12" [(ngModel)]="UsersActionModel.UserName" maxlength="255">
+          <span *ngIf="UsersActionModel.UserId > 0" class="form-control bg-gray-light">{{UsersActionModel.UserName}}</span>
+          <!--<div class="no-pading-left col-md-12 col-sm-12 col-xs-12" ng-show="formUpdateCate.txtUserName.$error.pattern">
+            <span class="red">Tên đăng nhập phải từ 6 ký tự trở lên và không được chứa ký tự đặc biệt và chữ có dấu.</span>
+          </div>-->
+        </div>
+      </div>
+
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Loại tài khoản <span class="required text-danger">*</span>
+        </label>
+        <div class="col-md-10 col-sm-8 col-xs-12">
+          <ng-select name="ddlUserType"
+                     id="ddlUserType"
+                     [items]="ListUserType.ListStatus"
+                     bindLabel="Name"
+                     bindValue="Id"
+                     [(ngModel)]="UsersActionModel.UserType"
+                     placeholder="-- Lựa chọn --">
+          </ng-select>
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Họ và Tên <span class="required text-danger">*</span>
+        </label>
+        <div class="col-md-10 col-sm-8 col-xs-12">
+          <input type="text" id="txFullName" name="txtFullName" required="required" class="form-control col-md-12 col-xs-12" [(ngModel)]="UsersActionModel.FullName" maxlength="255">
+          <!--<div *ngIf="UsersActionModel.FullName == '' || UsersActionModel.FullName == null">
+            <span class="text-red">Không được để trống</span>
+          </div>-->
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Email <span class="required text-danger">*</span>
+        </label>
+        <div class="col-md-10 col-sm-8 col-xs-12">
+          <input type="email" id="txtEmail" name="txtEmail" required="required" class="form-control col-md-12 col-xs-12" [(ngModel)]="UsersActionModel.Email" maxlength="100">
+          <!--<div class="" *ngIf="formUpdateCate.txtEmail.$error.pattern">
+        <span class="text-red">Email không đúng định dạng</span>
+      </div>
+      <div data-*ngIf="!formUpdateCate.txtEmail.$error.pattern && (UsersActionModel.Email == '' || UsersActionModel.Email == null)">
+        <span class="text-red">Không được để trống</span>
+      </div>-->
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Ngày sinh
+        </label>
+        <div class="col-md-10 col-sm-8 col-xs-12">
+          <input type="text" id="txtDob" name="txtDob" class="form-control col-md-12 col-xs-12 datepicker-short" [(ngModel)]="UsersActionModel.BirthdayStr" placeholder="Nhập ngày sinh">
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Số điện thoại
+        </label>
+        <div class="col-md-10 col-sm-8 col-xs-12">
+          <input type="text" ng-pattern="PatternPhone" id="txtPhoneNumber" name="txtPhoneNumber" class="form-control col-md-12 col-xs-12" [(ngModel)]="UsersActionModel.Mobile" placeholder="Nhập số điện thoại">
+          <!--<div class="" ng-show="formUpdateCate.txtPhoneNumber.$error.pattern">
+        <span class="text-red">Số điện thoại phải là số và từ 9 đến 12 số</span>
+      </div>-->
+        </div>
+      </div>
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12" for="rdoMale">
+          Giới tính
+        </label>
+        <div class="item col-md-10 col-sm-8 col-xs-12">
+          <div class="radio-inline">
+            <label>
+              <input id="rdoMale" type="radio" class="flat" name="Gender" checked="checked"> Nam
+            </label>
+          </div>
+          <div class="radio-inline">
+            <label>
+              <input id="rdoFeMale" type="radio" class="flat" name="Gender"> Nữ
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mg-bottom-10">
+        <label class="control-label col-md-2 col-sm-4 col-xs-12">
+          Địa chỉ
+        </label>
+        <div class="item col-md-10 col-sm-8 col-xs-12">
+          <input type="text" id="txtAddress" name="txtAddress" class="form-control" [(ngModel)]="UsersActionModel.Address" maxlength="255" placeholder="Nhập địa chỉ">
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-md" (click)="doUpdate()">
+        <span *ngIf="UsersActionModel.UserId == 0">Thêm mới</span>
+        <span *ngIf="UsersActionModel.UserId > 0">Cập nhật</span>
+      </button>
+      <button type="button" class="btn btn-danger btn-md"
+              (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>

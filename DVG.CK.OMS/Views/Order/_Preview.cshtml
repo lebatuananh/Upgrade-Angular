@@ -1,0 +1,78 @@
+﻿<div id="detailview" class="box none">
+    <div class="box-header">
+        <div class="box-title">
+            <h3 class="text-wrap no-mg-top" ng-if="Order.ProductId > 0">{{Order.ProductName}} (Số lượng: {{Order.Quantity}})</h3>
+            <h3 class="text-wrap no-mg-top" ng-if="Order.ProductId == 0">{{Order.Title}}</h3>
+            <div class="clearfix"></div>
+            <small class="no-margin">Ngày đặt: {{Order.CreatedDateStr}}</small>
+        </div>
+        <div class="ln_solid"></div>
+        <div class="box-tools">
+            <a onclick="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Tên khách hàng
+                        </label>
+                        <input ng-readonly="true" type="text" class="form-control" ng-model="Order.CustomerName">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Email
+                        </label>
+                        <input ng-readonly="true" type="text" class="form-control" ng-model="Order.Email">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Số điện thoại
+                        </label>
+                        <input ng-readonly="true" type="text" class="form-control" ng-model="Order.PhoneNumber">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Fax
+                        </label>
+                        <input ng-readonly="true" type="text" class="form-control" ng-model="Order.Fax">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>
+                            Địa chỉ
+                        </label>
+                        <input ng-readonly="true" type="text" class="form-control" ng-model="Order.Address">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>
+                        Nội dung
+                    </label>
+                    <textarea ng-readonly="true" rows="16" type="text" class="form-control" ng-model="Order.Content"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box-header">
+        <div class="box-title">
+
+        </div>
+        <div class="box-tools mg-bottom-10">
+            <a onclick="backtolist()" class="btn btn-success btn-sm pull-right"><i class="glyphicon glyphicon-arrow-left"></i> Quay lại</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

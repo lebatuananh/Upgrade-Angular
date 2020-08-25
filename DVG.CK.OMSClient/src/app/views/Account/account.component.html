@@ -1,0 +1,22 @@
+
+<section class="content">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <input class="form-control" (keydown.enter)="doChangePassword()" placeholder="Mật khẩu hiện tại" name="ChangePasswordModel.CurrentPassword" [(ngModel)]="ChangePasswordModel.CurrentPassword" type="password" value="">
+          </div>
+          <div class="form-group">
+            <input class="form-control" (keydown.enter)="doChangePassword()" placeholder="Mật khẩu mới" name="ChangePasswordModel.Password" [(ngModel)]="ChangePasswordModel.Password" type="password" value="">
+          </div>
+          <div class="form-group">
+            <input class="form-control" (keydown.enter)="doChangePassword()" placeholder="Xác nhận mật khẩu mới" name="ChangePasswordModel.ConfirmPassword" [(ngModel)]="ChangePasswordModel.ConfirmPassword" type="password" value="">
+          </div>
+          <!-- Change this to a button or input when using this as a form -->
+          <a href="javascript:;" (click)="doChangePassword()" class="btn btn-lg btn-success btn-block">Cập nhật</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

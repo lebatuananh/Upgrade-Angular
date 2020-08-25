@@ -1,0 +1,238 @@
+﻿@using DVG.WIS.Utilities.Serialization;
+@using DVG.WIS.Core.Constants;
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+}
+<script src="~/Scripts/SEOProduct.js"></script>
+<script src="~/JsModel/ProductActionController.js"></script>
+<input type="hidden" id="hdNoImage" value="@StaticVariable.NoImage" />
+<section id="updateProduct" class="content" ng-app="ProductAction" ng-controller="ProductActionController" ng-init="Init(@NewtonJson.Serialize(Model))">
+    <div class="row" id="updateProduct">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <h2 class="no-mg-top">@ViewBag.Title</h2>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <form id="frmUpdateProduct" name="frmUpdateProduct" data-parsley-validate="" class="" novalidate="" ng-model="Product">
+                        <input type="hidden" id="hddID" value="{{Product.EncrypttId}}" />
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="" for="title">
+                                        Tên sản phẩm <span class="required">*</span>
+                                    </label>
+                                    <input type="text" id="title" name="title" required="required" class="form-control" data-parsley-id="1"
+                                           ng-model="Product.Name"
+                                           ng-change="onChangeProductName()"
+                                           ng-blur="blurTitleInput()" />
+                                    <div ng-show="frmUpdateProduct.title.$error.required">
+                                        <span class="text-danger">Vui lòng nhập tên sản phẩm.</span>
+                                    </div>
+                                    <div ng-show="frmUpdateProduct.name.$error.maxlength">
+                                        <span class="text-danger">Tên sản phẩm không được quá 300 ký tự.</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="content">
+                                        Mô tả <span class="required">*</span>
+                                    </label>
+                                    <textarea id="description2" name="description2" required="required" rows="5" class="form-control ckeditor" data-parsley-id="3" ng-model="Product.Description2"></textarea>
+                                    <ul class="parsley-errors-list filled" id="parsley-id-3">
+                                        <li class="parsley-required">Vui lòng nhập mô tả.</li>
+                                    </ul>
+                                </div>
+                                <div class="form-group">
+                                    <label class="" for="content">
+                                        Hướng dẫn <span class="required">*</span>
+                                    </label>
+                                    <textarea id="content" name="content" required="required" rows="5" class="form-control ckeditor" data-parsley-id="3" ng-model="Product.Content"></textarea>
+                                    <ul class="parsley-errors-list filled" id="parsley-id-3">
+                                        <li class="parsley-required">Vui lòng nhập hướng dẫn.</li>
+                                    </ul>
+                                </div>
+                                <div class="form-group">
+                                    <label>Danh sách ảnh <button type="button" ng-click="addImages()" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> Thêm ảnh</button></label>
+                                    <div class="row">
+                                        <div class="col-md-12" id="divListNewsImage">
+                                            <div ng-repeat="item in Product.ListImage track by $index" title="Click xem ảnh gốc" style="width: 150px; height: 150px; display: inline-block; position: relative; margin: 5px 5px 5px 5px; border: solid 1px silver; vertical-align:top; overflow: hidden">
+                                                <button type="button" style="position: absolute;top: 2px; left: 2px; z-index: 100" class="btn btn-info btn-sm" ng-click="selectImages($index)" title="Tải ảnh khác">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+                                                <button style="position: absolute; top: 2px; left: 35px; z-index: 100" type="button" class="btn btn-danger btn-sm" ng-click="delImages($index)" title="Xóa ảnh">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                                <img src="{{item.ImageUrl}}" style="max-width: 148px; max-height: 150px; cursor: pointer; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto;" ng-click="previewImages(item.ImageUrl)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group row">
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <label>
+                                            Ảnh đại diện
+                                            <br /><i>(Kích thước tối thiểu 455px * 305px)</i>
+                                        </label>
+                                        <div>
+                                            <button type="button" ng-click="choseAvatar()" class="btn btn-success btn-xs">Cập nhật</button>
+                                            <button type="button" class="btn btn-danger btn-xs" ng-click="delAvatar()" title="Xóa ảnh">
+                                                <i class="fa fa-trash"></i> Xóa ảnh
+                                            </button>
+                                            <div class="pull-left mg-right-10">
+                                                <div title="Click xem ảnh gốc" style="width: 150px; height: 150px; display: inline-block; position: relative; margin: 5px 5px 5px 0px; border: solid 1px silver; vertical-align: top; overflow: hidden">
+                                                    <img id="ProductAvatar" src="{{Product.AvatarStr}}" style="max-width: 148px; max-height: 150px; cursor: pointer; position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto;" ng-click="previewImages(Product.Avatar)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Link bài viết <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon bg-gray disabled color-palette no-pd-right">
+                                            san-pham/
+                                        </div>
+                                        <input type="text" id="txtUrl" name="txtUrl" required="required" class="form-control"
+                                               ng-model="Product.Url" ng-maxlength="300" ng-disabled="Product.StatusOfProduct.IsApproved" />
+                                    </div>
+                                    <div ng-show="frmUpdateProduct.txtUrl.$error.required">
+                                        <span class="text-danger">Vui lòng nhập link.</span>
+                                    </div>
+                                    <div ng-show="frmUpdateProduct.txtUrl.$error.maxlength">
+                                        <span class="text-danger">Link không được quá 300 ký tự.</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="">
+                                        Tóm tắt (Số ký tự: {{Product.CountOfDes}})
+                                    </label>
+                                    <textarea id="sapo" class="form-control" rows="4" data-parsley-id="2" 
+                                              ng-model="Product.Description"
+                                              ng-change="onChangeDescription()"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Danh mục</label>
+                                    <select id="category" name="category" class="form-control input-sm" required="required" 
+                                            ng-options="option.Id as option.Name for option in Product.ListCategory" 
+                                            ng-model="Product.CategoryId">
+                                        <option value="" class="" selected="selected">--Lựa chọn--</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Trạng thái</label>
+                                    <select class="form-control input-sm" required="required" ng-options="option.Id as option.Name for option in Product.ListStatus" ng-model="Product.Status"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Tồn kho</label>
+                                    <select class="form-control input-sm" required="required" ng-options="option.Id as option.Name for option in Product.ListWarehouseStatus" ng-model="Product.WarehouseStatus"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="" for="author">
+                                        Giá sản phẩm
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control txt-currency" id="price" maxlength="15" placeholder="Giá sản phẩm" ng-model="Product.PriceStr">
+                                        <span class="input-group-addon">VNĐ</span>
+                                    </div>
+                                </div>
+                                <div class="form-group set-relative">
+                                    <label for="txtDistributionDate">
+                                        Ngày xuất bản
+                                    </label>
+                                    <input type="text" id="txtPublishedDate" class="form-control input-sm datepicker-inp" name="txtPublishedDate" ng-model="Product.PublishedDateStr">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Cấu hình SEO</label>
+                                    <div id="divboxseo">
+                                        <div>
+                                            <b style="color: Red">Preview</b>: <b>Khi độc giả tìm kiếm trên Google, kết quả sẽ hiển thị:</b>
+                                            <br />
+                                            <em>(Đây là mặc định hiển thị, nếu muốn khác và tối ưu hơn hãy sửa theo hướng dẫn bên dưới)</em>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <table class="table table-responsive-sm google-search-preview">
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <div class="" sig="yzv">
+                                                                <h3 class="r">
+                                                                    <a href="#" id="ggTitle"></a>
+                                                                </h3>
+                                                                <div class="s">
+                                                                    <div class="f kv">
+                                                                        <cite>
+                                                                            <span class="bc" id="ggLink"></span>
+                                                                        </cite>
+                                                                    </div>
+                                                                    <span class="st" id="ggDes"></span>
+                                                                </div>
+                                                            </div>
+                                                            <pre id="output" class="output" style="display: none"></pre>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <div class="form-group">
+                                                                <label>Từ khóa chủ đạo:</label>
+                                                                <input ng-model="Product.MetaKeyword" type="text" class="form-control" id="txtStandardKeyword" placeHolder="Hãy viết vào đây các từ khóa duy nhất mà bạn cho rằng nó quan trọng nhất bài (2 - 6 chữ), cách nhau bởi dấu phẩy(,)" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>                                                    
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <div class="form-group">
+                                                                <label>Tiêu đề hiển thị trên google:<em style="color: Gray">(Nếu bạn muốn 1 tiêu đề đặc biệt thu hút trên Google, hãy sáng tạo ở đây)</em></label>
+                                                                <input ng-model="Product.MetaTitle" name="txtMetaTitle" type="text" id="txtMetaTitle" class="form-control" ng-maxlength="300" /> Còn lại <span id="metaTitleLimit">58</span>/58
+                                                                <div id="metaTitleLimitMessenger" style="display: none">
+                                                                    <em style="color: #DC2425">Để SEO hiệu quả,bạn nên để 58 ký tự là tốt nhất</em>
+                                                                </div>
+                                                                <div ng-show="frmUpdateProduct.txtMetaTitle.$error.maxlength">
+                                                                    <span class="text-danger">Tiêu đề hiển thị trên google không được quá 300 ký tự.</span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td valign="top">
+                                                            <label>Mô tả hiển thị trên Google:<em style="color: Gray">(Hãy SÁNG TẠO 1 mô tả thú vị, nhiều điểm nhấn sẽ thu hút nhiều click)</em></label>
+                                                            <textarea ng-model="Product.MetaDescription" id="txtMetaDesc" rows="5" class="form-control"></textarea> Còn lại <span id="metaDesLimit">150</span>/150
+                                                            <input type="text" id="txtExtension2" style="display: none" />
+                                                            <div id="metaDesLimitMessenger" style="display: none">
+                                                                <em style="color: #DC2425">Để SEO hiệu quả,bạn nên để 150 ký tự là tốt nhất</em>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="errorflag none"></div>
+
+                    </form>
+                </div>
+                <div class="pull-right" style="position:fixed; right: 20px; bottom: 2px; z-index: 99">
+                    <button type="button" class="btn btn-primary mg-right-10" onclick="return validate()" data-ng-disabled="frmUpdateProduct.$invalid" ng-click="doUpdate()"><i class="fa fa-save"></i> Lưu</button>
+                    <a class="btn btn-info w-90 mg-right-10" onclick="return confirmcancel();"><i class="fa fa-remove"></i> Hủy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,80 @@
+﻿// Configure bundling and minification for the project.
+// More info at https://go.microsoft.com/fwlink/?LinkId=808241
+[
+  {
+    "outputFileName": "wwwroot/Content/portal_styles_plugins.min.css",
+    "inputFiles": [
+      "wwwroot/Content/bootstrap/bootstrap.min.css",
+      "wwwroot/Content/jquery-ui.css",
+      "wwwroot/Content/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css",
+      "wwwroot/Content/angular-notify.min.css",
+      "wwwroot/Content/fontawesome/font-awesome.min.css",
+      "wwwroot/Content/ionicons.min.css",
+      "wwwroot/Scripts/plugins/iCheck/square/blue.css",
+      "wwwroot/Content/JqueryChoosen/chosen.min.css"
+    ]
+
+  },
+  {
+    "outputFileName": "wwwroot/Content/portal_styles.min.css",
+    "inputFiles": [
+      "wwwroot/Content/Portal.css",
+      "wwwroot/Content/_all-skins.css",
+      "wwwroot/Content/Site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/portal_scripts_plugins.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/plugins/jQuery/jquery-2.2.3.min.js",
+      "wwwroot/Scripts/plugins/jQueryUI/jquery-ui.min.js",
+      "wwwroot/Scripts/plugins/slimScroll/jquery.slimscroll.min.js",
+      "wwwroot/Scripts/plugins/fastclick/fastclick.js",
+      "wwwroot/Scripts/plugins/iCheck/icheck.min.js",
+      "wwwroot/Scripts/bootstrap.min.js",
+      "wwwroot/Scripts/vendors/bootstrap-datetimepicker/moment.js",
+      "wwwroot/Scripts/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.js",
+      "wwwroot/Scripts/vendors/bootstrap-datetimepicker/bootstrap-datetimepicker.v.4.0.js",
+      "wwwroot/Scripts/vendors/bootstrap-datetimepicker/locale/vi.js",
+      "wwwroot/Scripts/JqueryChoosen/chosen.jquery.min.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Scripts/portal_scripts_angular.min.js",
+    "inputFiles": [
+      "wwwroot/Scripts/angular/angular.min.js",
+      "wwwroot/Scripts/angular/angular-route.min.js",
+      "wwwroot/Scripts/angular/angular-sanitize.min.js",
+      "wwwroot/Scripts/angular/angular-animate.min.js",
+      "wwwroot/Scripts/angular/angular-messages.min",
+      "wwwroot/Scripts/angular/angular-mocks.js",
+      "wwwroot/Scripts/angular/angular-notify.min.js",
+      "wwwroot/Scripts/angular/ui-bootstrap.min.js",
+      "wwwroot/Scripts/angular/ui-bootstrap-custom-tpls-0.10.0.min.js",
+      "wwwroot/Scripts/angular/ui-bootstrap-tpls.min.js"
+      //"wwwroot/Scripts/ModulesExtension.js"
+    ],
+    "minify": {
+          "enabled": true
+        }
+    },
+    {
+      "outputFileName": "wwwroot/Scripts/portal_scripts.min.js",
+      "inputFiles": [
+        "wwwroot/Scripts/app.js",
+        "wwwroot/Scripts/validator.js",
+        "wwwroot/Scripts/script.js"
+      ]
+    }
+    //{
+    //  "outputFileName": "wwwroot/js/Web/productpost.min.js",
+    //  "inputFiles": [
+    //    "wwwroot/js/Web/productpost.js"
+    //  ],
+    //  "minify": {
+    //    "enabled": true,
+    //    "renameLocals": true
+    //  },
+    //  "sourceMap": false
+    //}
+    ]

@@ -1,0 +1,207 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card card-accent-primary">
+        <div class="card-header">
+          <i class="fa fa-plus"></i>
+          <span class="card-title" style="font-size:17px;">
+            Add notification
+          </span>
+        </div>
+        <div class="card-body">
+          <form (keydown.enter)="notificationAddForm.form.valid ? doSend() : return()"
+                class="form-horizontal"
+                #notificationAddForm="ngForm"
+                (ngSubmit)="doSend()">
+            <!--Title-->
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="txtTitle">Notification title <span class="text-danger">*</span> </label>
+              <div class="col-md-9">
+                <input type="text"
+                       id="txtTitle"
+                       name="txtTitle"
+                       class="form-control"
+                       placeholder="Notification title"
+                       maxlength="120"
+                       required
+                       [(ngModel)]="notificationModel.Title"
+                       #NotificationTitle="ngModel" validNoSpaces />
+                <div><span class="mgr-50"><i> Visible Character: 50</i></span><span><i>Max Character: 120</i></span></div>
+                <div *ngIf="NotificationTitle.invalid && (NotificationTitle.dirty || NotificationTitle.touched || notificationAddForm.submitted)"
+                     class="alert-danger">
+                  <div *ngIf="NotificationTitle?.errors.required">
+                    Notification title is required.
+                  </div>
+                  <div *ngIf="!NotificationTitle?.errors.required && NotificationTitle.hasError('whitespace')">
+                    Please enter valid data.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Text-->
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="txtContent">Text <span class="text-danger">*</span></label>
+              <div class="col-md-9">
+                <textarea type="text"
+                          id="txtContent"
+                          name="txtContent"
+                          class="form-control"
+                          placeholder="Description"
+                          maxlength="1000"
+                          required
+                          [(ngModel)]="notificationModel.Content"
+                          #txtContent="ngModel"></textarea>
+                <div><span class="mgr-50"><i> Visible Character: 150</i></span><span><i>Max Character: 1000</i></span></div>
+                <div *ngIf="txtContent.invalid && (txtContent.dirty || txtContent.touched || notificationAddForm.submitted)"
+                     class="alert-danger">
+                  <div *ngIf="txtContent?.errors.required">
+                    Notification title is required.
+                  </div>
+                  <div *ngIf="!txtContent?.errors.required && txtContent.hasError('whitespace')">
+                    Please enter valid data.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <!--Brand-->
+              <label class="col-md-2 col-form-label" for="ddlBrand ">Brand</label>
+              <div class="col-md-2">
+                <ng-select name="ddlBrand"
+                           [items]="listBrand"
+                           bindLabel="BrandName"
+                           bindValue="BrandId"
+                           [(ngModel)]="notificationModel.BrandId"
+                           placeholder="--Select Brand--"
+                           (change)="onChangeBrand()">
+                </ng-select>
+              </div>
+              <div class="col-md-1"></div>
+              <!--Model-->
+              <label class="col-md-1 col-form-label" for="ddlModel">Model</label>
+              <div class="col-md-2">
+                <ng-select name="ddlModel"
+                           [items]="listModelToBind"
+                           bindLabel="ModelName"
+                           bindValue="ModelId"
+                           [(ngModel)]="notificationModel.ModelId"
+                           placeholder="--Select Model--">
+                </ng-select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <!--Image-->
+              <label class="col-md-2 col-form-label" for="txtImageLink">Image (paste link) <span class="text-danger">*</span></label>
+              <div class="col-md-9">
+                <input name="txtImageLink"
+                       type="url"
+                       class="form-control"
+                       placeholder="Image link"
+                       required
+                       (keydown.space)="$event.preventDefault();"
+                       pattern="(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)"
+                       #txtImageLink="ngModel"
+                       [(ngModel)]="notificationModel.Image"
+                       (paste)="txtImageLink_paste($event)"/>
+                <div *ngIf="txtImageLink.invalid && (txtImageLink.dirty || txtImageLink.touched ||notificationAddForm.submitted)" class="alert-danger">
+                  <div *ngIf="txtImageLink?.errors.required">
+                    Image is required.
+                  </div>
+                  <div *ngIf="txtImageLink?.errors.pattern">
+                    Image is invalid.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <!--Destination Link-->
+              <label class="col-md-2 col-form-label" for="txtDestinationLink">Destination Link <span class="text-danger">*</span></label>
+              <div class="col-md-9">
+                <input name="txtDestinationLink"
+                       type="url"
+                       class="form-control"
+                       placeholder="Destination link"
+                       required
+                       (keydown.space)="$event.preventDefault();"
+                       pattern="(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+                       #txtDestinationLink="ngModel"
+                       [(ngModel)]="notificationModel.DestinationLink"
+                       (paste)="txtDestinationLink_paste($event)"/>
+                <div *ngIf="txtDestinationLink.invalid && (txtDestinationLink.dirty || txtDestinationLink.touched || notificationAddForm.submitted)" class="alert-danger">
+                  <div *ngIf="txtDestinationLink?.errors.required">
+                    Destination link is required.
+                  </div>
+                  <div *ngIf="!txtDestinationLink?.errors.required && txtDestinationLink?.errors.pattern">
+                    Destination is invalid.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Delivery Type-->
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="ddlDeliveryType">Delivery <span class="text-danger">*</span></label>
+              <div class="col-md-2">
+                <ng-select name="ddlDeliveryType"
+                           [items]="listDeliveryType"
+                           bindLabel="Value"
+                           bindValue="Key"
+                           [(ngModel)]="notificationModel.DeliveryType"
+                           placeholder="--Select delivery--"
+                           required
+                           #ddlDeliveryType="ngModel">
+                </ng-select>
+                <div *ngIf="ddlDeliveryType.invalid && (ddlDeliveryType.dirty || ddlDeliveryType.touched || notificationAddForm.submitted)" class="alert-danger">
+                  <div *ngIf="ddlDeliveryType?.errors.required">
+                    Delivery is required.
+                  </div>
+                </div>
+              </div>
+              <!--delivery date-->
+              <div class="col-md-2">
+                <div class="input-group" *ngIf="notificationModel.DeliveryType ==2">
+                  <input type="text"
+                         required
+                         id="txtDeliveryDate"
+                         name="txtDeliveryDate"
+                         [owlDateTime]="dtDeliveryDate"
+                         [owlDateTimeTrigger]="dtDeliveryDate"
+                         [(ngModel)]="notificationModel.DeliveryDateStr"
+                         [min]="minDate"
+                         placeholder="Delivery date"
+                         class="form-control"
+                         #txtDeliveryDate="ngModel" />
+                  <owl-date-time #dtDeliveryDate></owl-date-time>
+                  <div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar-check-o"></i></span></div>
+                  <div *ngIf="txtDeliveryDate.invalid &&(txtDeliveryDate.dirty || notificationAddForm.submitted)" class="alert-danger">
+                    <div *ngIf="txtDeliveryDate?.errors.required">
+                      Delivery date is required.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--footer button-->
+            <div class="modal-footer">
+              <button type="submit"
+                      class="btn btn-md btn-primary"
+                      [disabled]=" !notificationAddForm.form.valid">
+                Send
+              </button>
+              <button type="reset" (click)="cancelAdd()" class="btn btn-md btn-secondary">
+                Cancel
+              </button>
+            </div>
+          </form>
+          <ngx-loading [show]="loading"
+                       [config]="{
+              animationType: ngxLoadingAnimationTypes.threeBounce,
+              primaryColour: primaryColour,
+              backdropBorderRadius: '3px'
+            }"
+                       [template]="loadingTemplate">
+          </ngx-loading>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,448 @@
+<ng-container>
+  <div class="card">
+    <div class="card-body row">
+      <div class="col-lg-2 col-md-2 pd-5">
+        <div class="form-group">
+          <label class="label-bold">Từ khóa</label>
+          <input type="text" class="form-control input-sm" name="SearchOrder.Keyword" (keydown.enter)="doSearch()"
+            [(ngModel)]="SearchOrder.KeyWord" placeholder="Tên KH/SĐT/Mã ĐH/Mã Code">
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 pd-5">
+        <div class="form-group">
+          <label class="label-bold">Trạng thái </label>
+          <ng-select name="ddlDeliveryStatus" id="ddlDeliveryStatus" [items]="IndexModel.ListDeliveryStatus"
+            bindLabel="Name" bindValue="Id" [(ngModel)]="SearchOrder.DeliveryStatus" (change)="doSearch()"
+            placeholder="-- Lựa chọn --">
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 pd-5">
+        <div class="form-group">
+          <label class="label-bold">Nguồn hóa đơn</label>
+          <ng-select name="ddlSourceType" id="ddlSourceType" [items]="IndexModel.ListSourceType" bindLabel="Name"
+            bindValue="Id" [(ngModel)]="SearchOrder.SourceType" (change)="doSearch()" placeholder="-- Lựa chọn --">
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-2 pd-5">
+        <div class="form-group">
+          <label class="label-bold">Loại hóa đơn</label>
+          <ng-select name="ddlOrderType" id="ddlOrderType" [items]="IndexModel.ListOrderType" bindLabel="Name"
+            bindValue="Id" [(ngModel)]="SearchOrder.OrderType" (change)="doSearch()" placeholder="-- Lựa chọn --">
+          </ng-select>
+        </div>
+      </div>
+      <div class="form-group col-lg-3 col-md-3 pd-5">
+        <label class="label-bold">Thời gian tạo</label>
+        <input type="text" id="txtFromCreatedDate" name="txtFromCreatedDate" [owlDateTime]="dtCreatedFromDate"
+          [owlDateTimeTrigger]="dtCreatedFromDate" [(ngModel)]="SearchOrder.ArrCreatedDate" placeholder="Thời gian tạo"
+          (click)="$event.target.select()" class="form-control" [selectMode]="'range'">
+        <owl-date-time pickerType="calendar" #dtCreatedFromDate></owl-date-time>
+        <!--<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar-plus-o"></i></span></div>-->
+
+        <owl-date-time #dt10></owl-date-time>
+      </div>
+      <!--<div class="form-group col-md-3">
+    <label class="label-bold">Tạo đến ngày</label>
+    <input type="text" id="txtToCreatedDate" name="txtToCreatedDate"
+           [owlDateTime]="dtCreatedToDate"
+           [owlDateTimeTrigger]="dtCreatedToDate"
+           [(ngModel)]="SearchOrder.ToCreatedDate"
+           placeholder="Tạo đến ngày"
+           (click)="$event.target.select()"
+           class="form-control">
+    <owl-date-time pickerType="calendar" #dtCreatedToDate></owl-date-time>
+  </div>-->
+      <div class="form-group col-lg-1 col-md-1">
+        <label></label>
+        <button style="width: 40px; bottom: 7px;" type="button"
+          class="form-control btn btn-primary btn-sm btn-search-bt" (click)="doSearch()"><i
+            class="fa fa-search"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card card-accent-primary">
+    <ngx-loading [show]="IsShowLoader" [config]="{
+    animationType: NgxLoadingAnimationTypes.wanderingCubes,
+    backdropBorderRadius: '3px'
+  }" [template]="LoadingTemplate">
+    </ngx-loading>
+    <div class="card-header">
+      <i class="fa fa-list"></i>
+      <span class="card-title">Danh sách đơn hàng</span>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="float-left mr-3">
+          <label>
+            Bạn đang ở trang {{ page.TotalItem > 0 ? page.CurrentPage : 0 }}/{{
+                page.TotalPage > 0 ? page.TotalPage : 0
+              }}
+            (Có tổng {{ page.TotalItem > 0 ? page.TotalItem : 0 }} bản ghi)
+          </label>
+        </div>
+        <div class="float-right mr-3">
+          <pagination-controls class="pagination-md" (pageChange)="pageChange($event)" maxSize="10"
+            directionLinks="true" autoHide="true" responsive="true" previousLabel="Previous" nextLabel="Next"
+            screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+            screenReaderCurrentLabel="You're on page">
+          </pagination-controls>
+        </div>
+        <table id="datatable" class="table table-striped">
+          <thead>
+            <tr role="row">
+              <th style="width: 5px;">#</th>
+              <th width="7%">Mã đơn</th>
+              <th *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood">Thông tin khách</th>
+              <!---->
+              <th *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood">Đơn hàng</th>
+              <!---->
+              <th *ngIf="Role == RolesEnum.Kitchen || Role == RolesEnum.Checkfood">Danh sách món</th>
+              <th>Thời gian khách nhận</th>
+              <th *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood">Phí/Giá</th>
+              <!---->
+              <th *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood" width="10%"
+                style="text-align: left;">
+                Trạng thái khác <i class="fa fa-question-circle-o" style="cursor: pointer;"
+                  (click)="openModalDescriptionOtherStatus(templateModalDescriptionOtherStatus)"></i>
+              </th>
+              <!---->
+              <th width="11%"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="ListData == '' || ListData == []">
+              <td [attr.colspan]="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood ? '10' : '5'">
+                <p class="text-center">Không tìm thấy đơn hàng nào</p>
+              </td>
+            </tr>
+            <tr role="row" *ngFor="
+                    let i = index;
+                    let item;
+                    of: ListData
+                      | paginate
+                        : {
+                            itemsPerPage: page.PageSize,
+                            currentPage: page.CurrentPage,
+                            totalItems: page.TotalItem
+                          }
+                  ">
+              <td class="text-center">{{(page.CurrentPage - 1) * page.PageSize + i + 1 }}</td>
+              <td>{{ item.OrderId }}</td>
+
+              <td *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood" class="sorting_1">
+                {{item.CustomerName}}<br />
+                {{item.CustomerPhone}}<br />
+                {{item.DistrictStr}}
+              </td>
+              <td *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood" class="sorting_1">
+                <div class="row">
+                  <div class="col-md-12"><b>Nguồn:</b> {{item.SourceTypeStr}}</div>
+                </div>
+                <div class="row sub-info">
+                  <div class="col-md-12"><b>Hình thức:</b> {{item.OrderTypeStr}}</div>
+                </div>
+              </td>
+              <td align="center" class="sorting_1" *ngIf="Role == RolesEnum.Kitchen || Role == RolesEnum.Checkfood">
+                <table class="table table-striped table-bordered cls-lst-order"
+                  style="font-size: 14px; width: 100% !important">
+                  <thead>
+                    <tr role="row">
+                      <th>#</th>
+                      <th>Mã món</th>
+                      <th>Tên món</th>
+                      <th>SL</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="item.lstOrderDetail == null || item.lstOrderDetail == []">
+                      <td [attr.colspan]="5">
+                        <p class="text-center">Không tìm thấy món ăn nào</p>
+                      </td>
+                    </tr>
+                    <tr role="row" *ngFor="let j = index; let detail of item.lstOrderDetail">
+                      <td>
+                        {{j+1}}
+                      </td>
+                      <td>
+                        {{ detail.Code }}
+                      </td>
+                      <td> {{ detail.ProductName }} </td>
+                      <td> {{ detail.Quantity }} </td>
+                      <td> {{ detail.Note }} </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td class="sorting_1">
+                {{item.DeliveryDateStr}}
+              </td>
+              <td *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood" class="sorting_1">
+                <div class="row sub-info">
+                  <div class="col-md-12"><b>Thành tiền:</b> {{item.PriceStr}} đ</div>
+                </div>
+                <div class="row sub-info">
+                  <div class="col-md-12"><b>Phí ship:</b> {{item.ShipFeeStr}} đ</div>
+                </div>
+              </td>
+
+              <td *ngIf="Role != RolesEnum.Kitchen && Role != RolesEnum.Checkfood" class="text-right">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label *ngIf="item.OrderType == 0" [ngClass]="{
+                                                     ' my-text-dark': item.DeliveryStatus ==  DeliveryStatusEnum.Default,
+                                                     ' my-text-default': item.DeliveryStatus ==  DeliveryStatusEnum.Idle ,
+                                                     ' my-text-warning': item.DeliveryStatus ==  DeliveryStatusEnum.Asigning ,
+                                                     ' text-primary': item.DeliveryStatus ==  DeliveryStatusEnum.Accepted ,
+                                                     ' my-text-info': item.DeliveryStatus ==  DeliveryStatusEnum.InProcess ,
+                                                     ' text-success': item.DeliveryStatus ==  DeliveryStatusEnum.Completed ,
+                                                     ' my-text-secondary': item.DeliveryStatus ==  DeliveryStatusEnum.Cancelled,
+                                                     ' text-danger': item.DeliveryStatus ==  DeliveryStatusEnum.ApiError
+                                                    }" class="col-md-12 text-left"
+                      style="padding: 5px; border-radius: .25rem;">
+                      <i class="fa fa-circle"></i> {{item.DeliveryStatusStr}}
+                    </label>
+                  </div>
+                </div>
+                <div class="row"
+                  *ngIf="item.RequestType == RequestTypeEnum.CSRequestDestroy || item.RequestType == RequestTypeEnum.KitchenDestroy ">
+                  <div class="col-md-12">
+                    <label class="col-md-12 text-danger text-left" style="padding: 5px; border-radius: .25rem;"><i
+                        class="fa fa-circle"></i> {{item.RequestTypeStr}} </label>
+                  </div>
+                </div>
+                <div class="row"
+                  *ngIf="item.RequestType == RequestTypeEnum.ConfirmDestroyForCS || item.RequestType == RequestTypeEnum.ConfirmCustomerForDestroy ">
+                  <div class="col-md-12">
+                    <label class="col-md-12 text-success text-left" style="padding: 5px; border-radius: .25rem;"> <i
+                        class="fa fa-circle"></i> {{item.RequestTypeStr}}</label>
+                  </div>
+                </div>
+              </td>
+              <td class="text-right">
+                <a href="javascript:void(0)" (click)="getOrderById(item.OrderId)"
+                  class="btn btn-primary btn-md mg-bt-5 col-md-12"><i class="fa fa-eye"></i> Xem </a>
+                <!--<a class="btn btn-warning btn-md col-md-12 mg-bt-5"><i class="fa fa-print"></i> In đơn </a>-->
+                <a *ngIf="(Role == RolesEnum.CustomerService
+                                        || Role == RolesEnum.Admin) && SearchOrder.Status == OrderStatusEnum.Inactive"
+                  href="javascript:void(0)" class="btn btn-warning btn-md col-md-12 mg-bt-5" routerLink="/order/update"
+                  [queryParams]="{encryptId:item.EncryptId}" queryParamsHandling="merge" target="_blank"><i
+                    class="fa fa-pencil"></i> Sửa đơn </a>
+                <a *ngIf="(Role == RolesEnum.CustomerService
+                                        || Role == RolesEnum.Admin) && SearchOrder.Status == OrderStatusEnum.Inactive"
+                  (click)="openModalConfirm(templateConfirm,'AproveOrder', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Xác nhận đơn
+                </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Kitchen) && SearchOrder.Status == OrderStatusEnum.PushToPOS"
+                  (click)="openModalConfirm(templateConfirm,'KitchenAccept', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Nhận nấu </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Checkfood) && SearchOrder.Status == OrderStatusEnum.KitchenAccept"
+                  (click)="openModalConfirm(templateConfirm,'KitchenDone', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Đã nấu xong </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                     || Role == RolesEnum.Cashier) 
+                     && SearchOrder.Status == OrderStatusEnum.KitchenDone 
+                     && item.OrderType == OrderTypeEnum.Delivery
+                     && (item.DeliveryStatus == 0 || item.DeliveryStatus == DeliveryStatusEnum.CallAnotherShipping)"
+                  (click)="openModalConfirm(templateConfirm,'CallAhamoveShipping', item.OrderId)"
+                  class="btn btn-info btn-md col-md-12 mg-bt-5"><i class="fa fa fa-truck"></i> Ahamove </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                  || Role == RolesEnum.Cashier) && SearchOrder.Status == OrderStatusEnum.KitchenDone && item.OrderType == OrderTypeEnum.Delivery"
+                  (click)="openModalConfirm(templateConfirmWithPrice,'CallAnotherShipping', item.OrderId)"
+                  class="btn btn-warning btn-md col-md-12 mg-bt-5"><i class="fa fa-motorcycle"></i> Ship ngoài </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Cashier) && SearchOrder.Status == OrderStatusEnum.KitchenDone"
+                  (click)="openModalConfirm(templateConfirm,'CashierReceive', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Nhận tiền </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                  || Role == RolesEnum.Cashier
+                  || Role == RolesEnum.CustomerService
+                  || Role == RolesEnum.KitchenManager) && SearchOrder.Status == OrderStatusEnum.Delivering"
+                  (click)="openModalConfirm(templateConfirm,'DeliveryToOrderComplete', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Hoành thành </a>
+                  <a *ngIf="(Role == RolesEnum.Admin
+                  || Role == RolesEnum.KitchenManager) && SearchOrder.Status == OrderStatusEnum.Failure"
+                  (click)="openModalConfirm(templateConfirm,'FailureToOrderComplete', item.OrderId)"
+                  class="btn btn-success btn-md col-md-12 mg-bt-5"><i class="fa fa-check-square-o"></i> Hoành thành </a>                  
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.CustomerService) && SearchOrder.Status != OrderStatusEnum.Destroy
+                               && SearchOrder.Status != OrderStatusEnum.Inactive
+                               && SearchOrder.Status != OrderStatusEnum.Success
+                               && SearchOrder.RequestType != RequestTypeEnum.KitchenDestroy
+                               && SearchOrder.RequestType != RequestTypeEnum.CSRequestDestroy
+                               && item.RequestType  == 0"
+                  (click)="openModalConfirm(templateConfirmWithReason,'RequestDestroy', item.OrderId)"
+                  class="btn btn-danger btn-md col-md-12 mg-bt-5"><i class="fa fa-trash-o"></i> CS Báo hủy </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.CustomerService)
+                               && SearchOrder.RequestType == RequestTypeEnum.KitchenDestroy"
+                  (click)="openModalConfirm(templateConfirm,'RequestConfirmCustomer', item.OrderId)"
+                  class="btn btn-warning btn-md col-md-12 mg-bt-5"><i class="fa fa-phone"></i> CS đã báo khách </a>
+                <a *ngIf="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.KitchenManager) && SearchOrder.RequestType == RequestTypeEnum.CSRequestDestroy"
+                  (click)="openModalConfirm(templateConfirm,'Destroy', item.OrderId)"
+                  class="btn btn-secondary btn-md col-md-12 mg-bt-5"><i class="fa fa-ban"></i> Hủy đơn </a>
+                <a *ngIf="((Role == RolesEnum.CustomerService && SearchOrder.Status == OrderStatusEnum.Inactive)
+                                        ||Role == RolesEnum.Admin
+                                        || Role == RolesEnum.KitchenManager) && SearchOrder.Status != OrderStatusEnum.Success
+                               && SearchOrder.RequestType != RequestTypeEnum.KitchenDestroy
+                               && SearchOrder.Status != OrderStatusEnum.Destroy
+                               && SearchOrder.RequestType != RequestTypeEnum.CSRequestDestroy"
+                  (click)="openModalConfirm(templateConfirmWithReason,'Destroy', item.OrderId)"
+                  class="btn btn-secondary btn-md col-md-12 mg-bt-5"><i class="fa fa-ban"></i> Hủy đơn </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="float-left mr-3">
+          <label>
+            Bạn đang ở trang {{ page.TotalItem > 0 ? page.CurrentPage : 0 }}/{{
+                page.TotalPage > 0 ? page.TotalPage : 0
+              }}
+            (Có tổng {{ page.TotalItem > 0 ? page.TotalItem : 0 }} bản ghi)
+          </label>
+        </div>
+        <div class="float-right mr-3">
+          <pagination-controls (pageChange)="pageChange($event)" maxSize="10" directionLinks="true" autoHide="true"
+            responsive="true" previousLabel="Previous" nextLabel="Next" screenReaderPaginationLabel="Pagination"
+            screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #templateConfirm>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Xác nhận thao tác: {{message}}
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <!--<div class="modal-body">
+      Xác nhận thao tác: {{message}}
+    </div>-->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-lg col-md-6 col-lg-6 col-xs-6" (click)="confirm()">
+        Xác
+        nhận
+      </button>
+      <button type="button" class="btn btn-danger btn-lg col-md-6 col-lg-6 col-xs-6" (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #templateConfirmWithReason>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Xác nhận thao tác: {{message}}
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label class="label-bold">Lý do:</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="reasonNote" placeholder=""></textarea>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-lg col-md-6 col-lg-6 col-xs-6" (click)="confirm()">
+        Xác
+        nhận
+      </button>
+      <button type="button" class="btn btn-danger btn-lg col-md-6 col-lg-6 col-xs-6" (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #templateConfirmWithPrice>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">
+        Xác nhận thao tác: {{message}}
+      </h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <label class="label-bold">Tiền ship:</label>
+      <input type="number" [(ngModel)]="deliveryPrice" placeholder="Nhập tiền ship" class="form-control">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success btn-lg col-md-6 col-lg-6 col-xs-6" (click)="confirm()">
+        Xác
+        nhận
+      </button>
+      <button type="button" class="btn btn-danger btn-lg col-md-6 col-lg-6 col-xs-6" (click)="modalRef.hide()">
+        Hủy
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #templateModalDescriptionOtherStatus>
+    <div class="modal-header">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h5>1. Trạng thái cảnh báo phụ:</h5>
+      - <b>CSKH báo hủy đơn</b>: CSKH báo hủy có lưu lý do cho quản lý bếp để tiến hành hủy đơn<br />
+      - <b>Hủy đơn theo yêu cầu của CSKH</b>: Sau khi đơn đã hủy, sẽ gắn cờ này nếu đơn được hủy từ yêu cầu của
+      CSKH<br />
+      - <b>Báo lại khách do bếp hủy</b>: Quản lý bếp hủy đơn, CSKH cần gọi điện báo lại khách lý do hủy đơn<br />
+      - <b>Hủy đơn đã báo lại khách</b>: Sau khi CSKH báo lại khách sẽ gắn cờ này để biết đơn hủy đã báo lại
+      khách<br /><br />
+      <h5>2. Các trạng thái giao hàng:</h5>
+      - <b>Chưa giao hàng</b>: Chưa vận chuyển (VC)<br />
+      - <b>IDLE</b>: Xác nhận tạo đơn hàng trên AhaMove<br />
+      - <b>ASSIGNING</b>: Đang tìm kiếm shipper<br />
+      - <b>ACCEPTED</b>: Khi shipper nào đó nhận đơn VC, Đơn sẽ chuyển sang trạng thái ACCEPTED<br />
+      - <b>IN PROCESS</b>: Khi shipper nhận đồ ăn từ nhà hàng, họ sẽ nhấn nút Pick up và trạng thái đơn VC sẽ chuyển
+      sang trạng
+      thái IN PROCESS<br />
+      - <b>COMPLETED</b>: Khi shipper xác nhận thành công trên APP, đơn chuyển sang trạng thái COMPLETED<br />
+      - <b>CANCELLED</b>: Có 3 trường hợp dẫn đến trạng thái CANCELLED:<br />
+      + Nếu shipper hủy đơn, Đơn hàng sẽ chuyển sang trạng thái CANCELLED và cờ cancel_by_user được set là False<br />
+      + Nếu khách hàng hủy đơn, Đơn hàng chuyển trạng thái CANCELLED và cờ cancel_by_user được set là True<br />
+      + Nếu sau 15 phút không có shipper nhận đơn VC này, Đơn được chuyển sang trạng thái CANCELLED và cờ cancel_by_user
+      được set là False, đồng thời trường cancel_comment được set “Auto cancel, no driver accepted”
+    </div>
+    <div class="modal-footer">
+    </div>
+  </ng-template>
+  <div bsModal #orderDetailModel="bs-modal" class="modal fade right" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Chi tiết đơn hàng</h4>
+          <button type="button" class="close" (click)="orderDetailModel.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-orderdetail #orderdetail></app-orderdetail>
+        </div>
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-secondary" (click)="orderDetailModel.hide()">
+            Đóng
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->

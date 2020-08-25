@@ -1,0 +1,58 @@
+﻿@page
+@using  DVG.CK.OMS.FileManager;
+@model IndexModel
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>IMAGE MANAGER</title>
+
+    <link href="/FileManager/Content/treeview/themes/default/style.min.css" rel="stylesheet" />
+    <link href="/FileManager/Content/jqueryui/jquery-ui.css" rel="stylesheet" />
+    <link href="/FileManager/Content/css/style.css" rel="stylesheet" />
+    <script src="/FileManager/Content/treeview/libs/jquery.js"></script>
+    <script src="/FileManager/Content/jqueryui/jquery-ui.js"></script>
+    <script src="/FileManager/Content/treeview/jstree.min.js"></script>
+    <script src="/FileManager/Content/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="/FileManager/Content/js/file-manager.js?v=20150806"></script>
+    <script src="/FileManager/Content/js/script.js?v=20150806"></script>
+</head>
+<body>
+    <form id="frmMain">
+        <div id="explore">
+            <div class="title-bar">
+                IMAGE MANAGER
+            </div>
+
+            <div id="tree-folder" class="folder-explore">
+            </div>
+
+            <div class="file-explore">
+                <div class="file-item">
+                    <img src="/FileManager/Content/Images/no-image.png" />
+                    <p>No image in this folder.</p>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div class="status">
+                </div>
+
+                <div class="upload">
+                    <input type="checkbox" id="chkWaterMark" /><label for="chkWaterMark">Watermark</label>
+                    <input type="hidden" id="hfToken" value="@Model.Token" />
+                    <input type="file" name="file" multiple="multiple" id="fileUpload" />
+                    <input type="button" name="btnSubmit" id="btnSubmit" value="Upload" class="btn-upload" />
+                </div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+
+        <div id="loading">
+            <img src="/FileManager/Content/Images/loading.gif" alt="loading" />
+        </div>
+        <input type="hidden" id="hidUrlUploadFile" value="@Model.UrlUploadFile" />
+        <input type="hidden" id="hidUploadProject" value="@Model.UploadProject" />
+    </form>
+</body>
+</html>

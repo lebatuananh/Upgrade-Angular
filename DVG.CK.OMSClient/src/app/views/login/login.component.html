@@ -1,0 +1,67 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <form (keydown.enter)="loginForm.form.valid ? login() : return" #loginForm="ngForm">
+                  <h1>Đăng nhập</h1>
+                  <p class="text-muted">Đăng nhập để tạo phiên làm việc của bạn</p>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-user"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Tên tài khoản" autocomplete="username" required
+                      name="UserName" [(ngModel)]="_systemUserLoginModel.UserName" maxlength="50">
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-lock"></i></span>
+                    </div>
+                    <input type="password" class="form-control" placeholder="Mật khẩu" autocomplete="current-password"
+                      required name="Password" [(ngModel)]="_systemUserLoginModel.Password" maxlength="50">
+                  </div>
+                  <!-- <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-google"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Google code" #GGCode="ngModel" required
+                      name="GGCode" [(ngModel)]="_systemUserLoginModel.GGCode" maxlength="6"  pattern="[0-9]*">
+                  </div> -->
+                  <!-- <div class="text-danger">
+                    <div *ngIf="GGCode?.errors?.pattern">
+                        Google code is numberic.
+                    </div>
+                </div> -->
+                  <div class="row mt-3">
+                    <div class="col-6">
+                      <button type="button" class="btn btn-primary px-4" (click)="login()" [disabled]="!loginForm.form.valid">Đăng nhập</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <!-- <button type="button" class="btn btn-link px-0" (click)="goToSSO()" >Login SSO >></button> -->
+                    </div>
+                  </div>
+                  <ngx-loading [show]="authenService.loading"
+                  [config]="{animationType: ngxLoadingAnimationTypes.wanderingCubes, primaryColour: primaryColour, backdropBorderRadius: '3px'}"
+                  [template]="loadingTemplate"></ngx-loading>
+                </form>
+              </div>
+            </div>
+            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+              <div class="card-body text-center">
+                <div>
+                  <h2>OMS TASTY KITCHEN</h2>
+                  <p>Version 2.0</p>
+                  <!-- <button type="button" class="btn btn-primary active mt-3">Register Now!</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<notifier-container></notifier-container>

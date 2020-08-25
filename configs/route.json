@@ -1,0 +1,29 @@
+﻿{
+  "Route": [
+    {
+      "Name": "Liên hệ",
+      "Url": "lien-he",
+      "Defaults": {
+        "controller": "Home",
+        "action": "Contact"
+      },
+      "Constraints": {
+        
+      }
+    },
+    {
+      "Name": "Liên hệ 1",
+      "Url": "lien-he-2",
+      "Defaults": {
+
+      },
+      "Constraints": {
+
+      }
+    },
+    {
+      "Name": "Liên hệ 2",
+      "Url": "lien-he-2"
+    }
+  ]
+}

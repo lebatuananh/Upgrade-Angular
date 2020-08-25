@@ -1,0 +1,328 @@
+<form class="form-horizontal" #searchForm="ngForm" (keyup.enter)="search()">
+  <ngx-loading [show]="IsShowIndexLoading"
+    [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+    [template]="loadingTemplate">
+  </ngx-loading>
+  <div class="card">
+    <div class="card-header">
+      <i class="fa fa-search"></i> Thông kê doanh thu theo thu ngân
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <!-- <input type="date" name="txtFromDate" class="form-control" [(ngModel)]="SearchModel.FromDate" required
+                #txtFromDate="ngModel" />
+              <div *ngIf="txtFromDate.invalid && (txtFromDate.dirty || txtFromDate.touched || searchForm.submitted)"
+                class="alert-danger">
+                <div *ngIf="txtFromDate?.errors.required">
+                  Xin nhập từ ngày!
+                </div>
+              </div> -->
+
+              <input type="text" id="txtFromDate" name="txtFromDate" required [owlDateTime]="txtFromDate"
+                [owlDateTimeTrigger]="txtFromDate" [(ngModel)]="SearchModel.FromDate" placeholder="Date Time"
+                class="form-control" placeholder="From date.." #txtFromDate="ngModel" />
+              <owl-date-time pickerType="calendar" #txtFromDate></owl-date-time>
+
+              <div *ngIf="
+              txtFromDate.invalid &&
+              (txtFromDate.dirty || txtFromDate.touched || userForm.submitted)
+            " class="alert-danger">
+                <div *ngIf="txtFromDate?.errors.required">
+                  Xin nhập từ ngày!
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <!-- <input type="date" name="txtToDate" class="form-control" [(ngModel)]="SearchModel.ToDate" required
+                #txtToDate="ngModel" />
+              <div *ngIf="txtToDate.invalid && (txtToDate.dirty || txtToDate.touched || searchForm.submitted)"
+                class="alert-danger">
+                <div *ngIf="txtToDate?.errors.required">
+                  Xin nhập đến ngày!
+                </div>
+              </div> -->
+              <input type="text" id="txtToDate" name="txtToDate" required [owlDateTime]="txtToDate"
+                [owlDateTimeTrigger]="txtToDate" [(ngModel)]="SearchModel.ToDate" placeholder="Date Time"
+                class="form-control" placeholder="From date.." #txtToDate="ngModel" />
+              <owl-date-time pickerType="calendar" #txtToDate></owl-date-time>
+
+              <div *ngIf="
+            txtToDate.invalid &&
+            (txtToDate.dirty || txtToDate.touched || userForm.submitted)
+          " class="alert-danger">
+                <div *ngIf="txtToDate?.errors.required">
+                  Xin nhập từ ngày!
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <ng-select name="ddlSourceType" [clearable]="false" id="ddlSourceType"
+                [items]="IndexModel.ListRevenueType" bindLabel="Name" bindValue="Id" [(ngModel)]="SearchModel.Type"
+                (change)="onChangeSourceType()">
+              </ng-select>
+            </div>
+            <div class="col-md-3">
+              <input class="btn btn-primary" type="button" value="Thông kê" (click)="search()"
+                [disabled]="!searchForm.form.valid" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="card card-accent-primary">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Thống kê theo nhân viên
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+              Thu ngân
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstData">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card card-accent-primary">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Thống kê theo nguồn doanh thu
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+              Nguồn doanh thu
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstDataSouceType">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card card-accent-primary">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Thống kê theo hình thức thanh toán
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+              Hình thức thanh toán
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstDataPaymentType">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card card-accent-primary" *ngIf="isShow">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Thống kê thu theo món ăn
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+              Món ăn
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstDataProduct">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card card-accent-primary" *ngIf="isShow">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Báo cáo số lượng theo món ăn
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+              Món ăn
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstCountProduct">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="card card-accent-primary" *ngIf="isShow">
+  <div class="card-header">
+    <i class="fa fa-list"></i> Báo cáo theo số lượng Bill và khách hàng
+  </div>
+  <div class="card-body">
+    <ngx-loading [show]="IsShowGetListLoading"
+      [config]="{animationType: ngxLoadingAnimationTypes.threeBounce, backdropBorderRadius: '3px'}"
+      [template]="loadingTemplate">
+    </ngx-loading>
+    <div class="divScrollTable">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="width:300px">
+
+            </th>
+            <th style="text-align:center" *ngFor="let item of SearchModel.LstDate"
+              title="{{item | date: 'dd/MM/yyyy'}}">
+              {{item | date: 'dd/MM'}}
+            </th>
+            <th style="text-align:center">
+              Tổng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cashier of SearchModel.LstCountBill">
+            <td style="width:300px">
+              {{cashier.CashierName}}
+            </td>
+            <td style="text-align:center" *ngFor="let day of cashier.lstDay">
+              {{day.RevenueStr}}
+            </td>
+            <td style="text-align:center">
+              <b>{{cashier.TotalStr}}</b>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+﻿
+<div class="search-form clearfix" ng-class="!IsFormUpdate ? 'collapse': ''">
+    <form ng-model="SearchOrder">
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Từ khóa</label>
+                <input type="text" class="form-control input-sm" name="Search.Keyword" ng-keypress="keypressAction($event)" ng-model="SearchOrder.KeyWord" placeholder="Tên KH/SĐT/Mã ĐH/Mã Code">
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Trạng thái giao hàng</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in IndexModel.ListDeliveryStatus" ng-model="SearchOrder.DeliveryStatus" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Nguồn hóa đơn</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in IndexModel.ListSourceType" ng-model="SearchOrder.SourceType" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Loại hóa đơn</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in IndexModel.ListOrderType" ng-model="SearchOrder.OrderType" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label>Tạo từ ngày</label>
+            <input placeholder="Tạo từ ngày" type="text" id="txtFromCreatedDate" class="form-control input-sm datepicker-short" name="SearchOrder.FromCreatedDate" ng-model="SearchOrder.FromCreatedDate">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Tạo đến ngày</label>
+            <input placeholder="Tạo đến ngày" type="text" id="txtToCreatedDate" class="form-control input-sm datepicker-short" name="SearchOrder.ToCreatedDate" ng-model="SearchOrder.ToCreatedDate">
+        </div>
+        <div class="form-group col-lg-2 col-md-2">
+            <div style="width: 100px;">
+                <label></label>
+                <button type="button" class="form-control btn btn-primary btn-sm" ng-click="doSearch()">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+</div>

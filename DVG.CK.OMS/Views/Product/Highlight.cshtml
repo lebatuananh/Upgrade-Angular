@@ -1,0 +1,48 @@
+﻿@using DVG.WIS.Utilities.Serialization;
+@using DVG.CK.OMS.Extensions;
+@{
+    ViewBag.Title = "Sản phẩm nổi bật";
+}
+
+<script src="~/JsModel/ProductController.js"></script>
+<section class="content" ng-app="Product" ng-controller="ProductController" ng-init="Init(@NewtonJson.Serialize(Model))">
+    <div class="row">
+        <div class="col-md-6" id="indexnews">
+            <div id="listview" class="box">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box-header with-border">
+                            <div class="box-title">
+                                &nbsp;
+                            </div>
+                            <div class="box-tools">
+                                <button type="button" class="btn btn-default btn-sm pull-right" data-toggle="collapse" data-target=".search-form">
+                                    <div class="collapse search-form">
+                                        Tìm kiếm <i class="fa fa-chevron-up"></i>
+                                    </div>
+                                    <div class="collapse search-form in">
+                                        Tìm kiếm <i class="fa fa-chevron-down"></i>
+                                    </div>
+                                </button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- /.box-header -->
+                <!--// Form search -->
+                @Html.Partial("_SearchFormShort")
+
+                @Html.Partial("_ListShort")
+            </div>
+        </div>
+        <div class="col-md-6" id="highlight">
+            <div class="box">
+                @Html.Partial("_ListHighlight")
+
+            </div>
+        </div>
+    </div>
+</section>
+

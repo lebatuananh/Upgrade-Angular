@@ -1,0 +1,153 @@
+﻿@using DVG.WIS.Utilities.Serialization;
+@using DVG.CK.OMS.Extensions;
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+}
+<style>
+    .badge-dark {
+        background-color: #5a6977
+    }
+
+    .badge-default {
+        background-color: #777
+    }
+
+    .badge-secondary {
+        background-color: #dd4b39
+    }
+
+    .badge-primary {
+        background-color: #007bff
+    }
+
+    .badge-info {
+        background-color: #17a2b8
+    }
+
+    .badge-success {
+        background-color: #28a745
+    }
+
+    .badge-danger {
+        background-color: #cc0014
+    }
+
+    .my-nav-tabs {
+        border-bottom: 1px solid #ddd;
+    }
+
+        .my-nav-tabs > li {
+            float: left;
+            margin-bottom: -1px;
+        }
+
+            .my-nav-tabs > li > a {
+                margin-right: 2px;
+                line-height: 1.42857143;
+                border: 1px solid transparent;
+                border-radius: 4px 4px 0 0;
+            }
+
+            .my-nav-tabs > li.active > a {
+                background: #4DB848;
+                color: white;
+            }
+
+            .my-nav-tabs > li > a:hover {
+                background: #4DB848;
+                color: white;
+            }
+
+    .cls-lst-order, .cls-lst-order > tbody > tr > td, .cls-lst-order > thead > tr > th {
+        border: 1px solid #c8ced3;
+    }
+</style>
+<script src="~/JsModel/OrderController.js"></script>
+<section class="content" ng-app="Order" ng-controller="OrderController" ng-init="Init(@NewtonJson.Serialize(Model))">
+    <div id="listOrder" ng-show="!IsShowDetail">
+        <div>
+            <ul class="nav my-nav-tabs">
+                <li class="active" ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager" ng-click="InitTab(0, -1)"><a href="#tab_1_1" data-toggle="tab" id="tab_1"><h4>Chờ xác nhận</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager" ng-click="InitTab(1, -1)"><a href="#tab_1_2" data-toggle="tab" id="tab_2"><h4>Chờ đẩy sang bếp</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.Kitchen
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(2, -1)"><a href="#tab_1_3" data-toggle="tab" id="tab_3"><h4>Đã đẩy sang bếp</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.Kitchen
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(3, -1)"><a href="#tab_1_4" data-toggle="tab" id="tab_4"><h4>Bếp đang nấu</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.Cashier
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(4, -1)"><a href="#tab_1_4" data-toggle="tab" id="tab_5"><h4>Bếp báo xong</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.Cashier
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(5, -1)"><a href="#tab_1_5" data-toggle="tab" id="tab_6"><h4>Đang vận chuyển</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(6, -1)"><a href="#tab_1_6" data-toggle="tab" id="tab_7"><h4>Giao hàng không thành công</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(7, -1)"><a href="#tab_1_7" data-toggle="tab" id="tab_8"><h4>Giao hàng thành công</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(-1, 1)"><a href="#tab_1_8" data-toggle="tab" id="tab_9"><h4>CSKH báo hủy đơn</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager" ng-click="InitTab(-1, 3)"><a href="#tab_1_9" data-toggle="tab" id="tab_10"><h4>CSKH cần báo lại khách</h4></a></li>
+                <li ng-show="Role == RolesEnum.CustomerService
+                || Role == RolesEnum.Admin
+                || Role == RolesEnum.Manager
+                || Role == RolesEnum.KitchenManager" ng-click="InitTab(8, -1)"><a href="#tab_1_10" data-toggle="tab" id="tab_11"><h4>Đơn đã hủy</h4></a></li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane row-fluid mgb25 active" id="tab_1_1">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_2">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_3">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_4">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_5">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_6">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_7">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_8">
+                @Html.Partial("_TabItem")
+            </div>
+            <div class="tab-pane row-fluid mgb25" id="tab_1_9">
+                @Html.Partial("_TabItem")
+            </div>
+        </div>
+        @Html.Partial("_ConfirmPopup")
+    </div>
+    <div id="detailOrder" ng-show="IsShowDetail">
+        @Html.Partial("_Detail")
+    </div>
+</section>
+
+

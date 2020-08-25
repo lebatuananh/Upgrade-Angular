@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Log in";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>OMS Cloud Kitchen | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="~/Content/portal_styles_plugins.min.css" rel="stylesheet" />
+    <link href="~/Content/portal_styles.min.css" rel="stylesheet" />
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script src="~/Scripts/ckeditor/config-short.js"></script>
+    <script src="~/Scripts/portal_scripts_plugins.min.js"></script>
+    <script src="~/Scripts/portal_scripts_angular.min.js"></script>
+    <script src="~/Scripts/portal_scripts.min.js"></script>
+    <script src="~/Scripts/ModulesExtension.js"></script>
+    <script src="~/JsModel/AccountController.js"></script>
+</head>
+<body class="hold-transition login-page" onforminput="txtEmail">
+    <div class="login-box" ng-app="Account" ng-controller="AccountController" ng-init="init('@ViewBag.ReturnUrl')">
+        <div class="login-logo">
+            <a href="/"><b>OMS Cloud Kitchen</b></a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Đăng nhập để tạo phiên làm việc của bạn</p>
+            <form action="#" id="frmLogin" method="post">
+                <div class="item form-group has-feedback clearfix">
+                    <input id="name" class="form-control" name="Model.email" ng-model="Model.email" placeholder="" required="required" type="text" ng-keypress="ShortSubmit($event)" autofocus>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="item form-group has-feedback clearfix">
+                    <input id="password" type="password" name="Model.password" ng-model="Model.password" class="form-control" required="required" ng-keypress="ShortSubmit($event)">
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox" name="RememberMe" id="txtRememberMe"> Ghi nhớ
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <button type="button" class="btn btn-primary btn-block btn-flat" ng-click="doLogin()">Đăng nhập</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+            <br>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+    <script>
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        });
+    </script>
+</body>
+</html>

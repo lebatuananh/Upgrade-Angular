@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Helper\MetaSeoHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DVG.WIS.Caching\DVG.WIS.Caching.csproj" />
+    <ProjectReference Include="..\DVG.WIS.Core\DVG.WIS.Core.csproj" />
+    <ProjectReference Include="..\DVG.WIS.DAL\DVG.WIS.DAL.csproj" />
+    <ProjectReference Include="..\DVG.WIS.PublicModel\DVG.WIS.PublicModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pos\" />
+  </ItemGroup>
+</Project>

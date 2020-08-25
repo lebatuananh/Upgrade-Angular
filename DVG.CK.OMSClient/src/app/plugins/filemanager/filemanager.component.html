@@ -1,0 +1,45 @@
+<div id="explore">
+  <div class="title-bar">
+    IMAGE MANAGER
+  </div>
+
+  <div id="tree-folder" class="folder-explore jstree jstree-1 jstree-default jstree-default-responsive jstree-leaf" role="tree" tabindex="5000" style="overflow: hidden; outline: none;">
+    <tree-root [nodes]="treeNodes">
+      <ng-template #treeNodeTemplate let-node let-index="index">
+        <i class="fa fa-folder"></i>
+        <span name="spanTreeNode" (click)="treeNodeClick(node)">{{ node.data.name }}</span>
+      </ng-template>
+    </tree-root>
+  </div>
+  <div *ngIf="!isBusy" class="file-explore">
+    <div *ngFor="let item of listImages; let i = index">
+      <div class="file-item ui-draggable"
+           title="{{item.Name}}"
+           attr.data-name="{{item.Name}}"
+           attr.data-path="{{item.Path}}"
+           attr.data-full-path="{{item.FullPath}}"
+           attr.data-full-original-path="{{item.FullOriginalPath}}"
+           attr.data-size="{{item.Size}}"
+           attr.data-extension="null"
+           style="position: relative;"
+           (dblclick)="selectImage(item)">
+        <img src="{{item.FullPath}}">
+        <p>{{item.Name}}</p>
+      </div>
+    </div>
+  </div>
+  <app-loader *ngIf="isBusy"></app-loader>
+  <div class="status-bar">
+    <div class="status">
+    </div>
+
+    <div class="upload">
+      <input type="checkbox" id="chkWaterMark" style="display:none"><label for="chkWaterMark"></label>
+      <input type="hidden" name="hfToken" id="hfToken" value="Nep3vTLG9S8knekuQMRW/lk9rvtHYYkxB0LIYrnweoZzr1p09tTK/94YmWLoClvQ0QcCxf5kUMXbvZuT3+5DCA==">
+      <input type="file" id="file" multiple="multiple" (change)="handleFileInput($event.target.files, $event)" #fileInput >
+      <input type="button" name="btnSubmit" id="btnSubmit" value="Upload" class="btn-upload" (click)="uploadFile()" >
+    </div>
+  </div>
+
+  <div class="clear"></div>
+</div>

@@ -1,0 +1,37 @@
+.article-detail-box-related-link {
+  padding: 1px 25px;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 25px;
+  color: #444;
+}
+
+  .article-detail-box-related-link:before {
+    content: '';
+    display: block;
+    position: absolute;
+    background: #44b272;
+    border-radius: 5px 0 0 5px;
+    width: 5px;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .article-detail-box-related-link p a.also-read-link {
+    margin: 5px 0;
+    padding-bottom: unset !important;
+    color: #444 !important;
+    text-decoration: none;
+  }
+
+  .article-detail-box-related-link .title-box {
+    color: #44b272;
+    font-size: 22px;
+    line-height: unset !important;
+    font-weight: bold !important;
+  }
+

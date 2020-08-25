@@ -1,0 +1,173 @@
+﻿@using DVG.CK.OMS.Extensions;
+<div class="box-body no-padding">
+    <div class="row pd-left-10">
+        <div class="col-sm-5">
+            <div class="dataTables_info mg-top-20 mg-bottom-5" role="status" aria-live="polite">
+                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+            </div>
+        </div>
+        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <uib-pagination class="pagination pull-right mg-right-10 mg-bottom-10" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 table-responsive">
+            <table id="datatable" class="table table-striped table-bordered">
+                <thead>
+                    <tr role="row">
+                        <th>#</th>
+                        <th width="7%">Mã đơn</th>
+                        @*<th width="10%">Mã Code</th>*@
+                        <th ng-show="Role != RolesEnum.Kitchen">Thông tin khách</th>
+                        <th ng-show="Role != RolesEnum.Kitchen">Đơn hàng</th>
+                        <th ng-show="Role == RolesEnum.Kitchen">Danh sách món</th>
+                        <th>Thời gian khách nhận</th>
+                        <th ng-show="Role != RolesEnum.Kitchen">Phí/Giá</th>
+                        <th ng-show="Role != RolesEnum.Kitchen" width="5%">Trạng thái khác</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-if="ListData == '' || ListData == []">
+                        <td colspan="{{Role != RolesEnum.Kitchen ? '10' : '5' }}">
+                            <p class="text-center">Không tìm thấy đơn hàng nào</p>
+                        </td>
+                    </tr>
+                    <tr role="row" ng-repeat="item in ListData track by $index">
+                        <td class="text-center">{{((page.currentPage - 1) * page.itemsPerPage) + $index+1}}</td>
+                        <td>{{ item.OrderId }}</td>
+
+                        <td ng-show="Role != RolesEnum.Kitchen" class="sorting_1">
+                            {{item.CustomerName}}<br />
+                            {{item.CustomerPhone}}<br />
+                            {{item.DistrictStr}}
+                        </td>
+                        <td ng-show="Role != RolesEnum.Kitchen" class="sorting_1">
+                            <div class="row">
+                                <div class="col-md-12"><b>Nguồn:</b> {{item.SourceTypeStr}}</div>
+                            </div>
+                            <div class="row sub-info">
+                                <div class="col-md-12"><b>Hình thức:</b> {{item.OrderTypeStr}}</div>
+                            </div>
+                        </td>
+                        <td ng-show="Role == RolesEnum.Kitchen" class="sorting_1">
+                            <table class="table table-striped table-bordered table-responsive cls-lst-order" style="font-size: 14px;">
+                                <thead>
+                                    <tr role="row">
+                                        <th>#</th>
+                                        <th>Mã món</th>
+                                        <th>Tên món</th>
+                                        <th>SL</th>
+                                        <th>Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-if="item.lstOrderDetail == null || item.lstOrderDetail == []">
+                                        <td colspan="5">
+                                            <p class="text-center">Không tìm thấy món ăn nào</p>
+                                        </td>
+                                    </tr>
+                                    <tr role="row" ng-repeat="detail in item.lstOrderDetail track by $index">
+                                        <td>
+                                            {{$index+1}}
+                                        </td>
+                                        <td>
+                                            {{ detail.Code }}
+                                        </td>
+                                        <td> {{ detail.ProductName }} </td>
+                                        <td> {{ detail.Quantity }} </td>
+                                        <td> {{ detail.Note }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td class="sorting_1">
+                            {{item.DeliveryDateStr}}
+                        </td>
+                        <td ng-show="Role != RolesEnum.Kitchen" class="sorting_1">
+                            <div class="row sub-info">
+                                <div class="col-md-12"><b>Thành tiền:</b> {{item.PriceStr}} đ</div>
+                            </div>
+                            <div class="row sub-info">
+                                <div class="col-md-12"><b>Phí ship:</b> {{item.ShipFeeStr}} đ</div>
+                            </div>
+                        </td>
+
+                        <td ng-show="Role != RolesEnum.Kitchen" class="text-right">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label ng-class="{
+                                                     ' badge-dark': item.DeliveryStatus == {{ DeliveryStatusEnum.Default }},
+                                                     ' badge-default': item.DeliveryStatus == {{ DeliveryStatusEnum.Idle }},
+                                                     ' badge-secondary': item.DeliveryStatus == {{ DeliveryStatusEnum.Asigning }},
+                                                     ' badge-primary': item.DeliveryStatus == {{ DeliveryStatusEnum.Accepted }},
+                                                     ' badge-info': item.DeliveryStatus == {{ DeliveryStatusEnum.InProcess }},
+                                                     ' badge-success': item.DeliveryStatus == {{ DeliveryStatusEnum.Completed }},
+                                                     ' badge-danger': item.DeliveryStatus == {{ DeliveryStatusEnum.Cancelled }},
+                                                    }" class="badge col-md-12" style="padding: 5px; border-radius: .25rem;">
+                                        {{item.DeliveryStatusStr}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="item.RequestType == RequestTypeEnum.CSRequestDestroy || item.RequestType == RequestTypeEnum.KitchenDestroy ">
+                                <div class="col-md-12"><label class="col-md-12 badge badge-danger" style="padding: 5px; border-radius: .25rem;">{{item.RequestTypeStr}}</label></div>
+                            </div>
+                            <div class="row" ng-if="item.RequestType == RequestTypeEnum.ConfirmDestroyForCS || item.RequestType == RequestTypeEnum.ConfirmCustomerForDestroy ">
+                                <div class="col-md-12"><label class="col-md-12 badge badge-success" style="padding: 5px; border-radius: .25rem;">{{item.RequestTypeStr}}</label></div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <a href="javascript:void(0)" ng-click="getOrderById(item.OrderId)" class="btn btn-primary btn-md mg-bottom-5 col-md-12"><i class="fa fa-eye"></i> Xem </a>
+                            @*<a ng-show="(Role == RolesEnum.Kitchen
+        || Role == RolesEnum.Admin
+        || Role == RolesEnum.Manager
+        || Role == RolesEnum.KitchenManager) && SearchOrder.Status == OrderStatusEnum.KitchenAccept" ng-click="doPrintKitchen(item.OrderId)" class="btn btn-warning btn-md col-md-12 mg-bottom-5"><i class="fa fa-print"></i> In đơn </a>*@
+                            <a ng-show="(Role == RolesEnum.CustomerService
+                                        || Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Manager) && SearchOrder.Status == OrderStatusEnum.Inactive" href="javascript:void(0)" ng-click="getById(item.EncryptId)" class="btn btn-warning btn-md col-md-12 mg-bottom-5"><i class="fa fa-pencil"></i> Sửa đơn </a>
+                            <a ng-show="(Role == RolesEnum.CustomerService
+                                        || Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Manager) && SearchOrder.Status == OrderStatusEnum.Inactive" ng-click="doAproveOrder(item.OrderId)" class="btn btn-success btn-md col-md-12 mg-bottom-5"><i class="fa fa-check-square-o"></i> Xác nhận đơn </a>
+                            <a ng-show="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Kitchen) && SearchOrder.Status == OrderStatusEnum.PushToPOS" ng-click="doKitchenAccept(item.OrderId)" class="btn btn-success btn-md col-md-12 mg-bottom-5"><i class="fa fa-check-square-o"></i> Nhận nấu </a>
+                            <a ng-show="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Kitchen) && SearchOrder.Status == OrderStatusEnum.KitchenAccept" ng-click="doKitchenDone(item.OrderId)" class="btn btn-success btn-md col-md-12 mg-bottom-5"><i class="fa fa-check-square-o"></i> Đã nấu xong </a>
+                            <a ng-show="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Cashier) && SearchOrder.Status == OrderStatusEnum.KitchenDone" ng-click="doCashierReceive(item.OrderId)" class="btn btn-success btn-md col-md-12 mg-bottom-5"><i class="fa fa-check-square-o"></i> Nhận tiền </a>
+                            <a ng-show="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.CustomerService) && SearchOrder.Status != OrderStatusEnum.Destroy
+                               && SearchOrder.Status != OrderStatusEnum.Inactive
+                               && SearchOrder.Status != OrderStatusEnum.Success
+                               && SearchOrder.RequestType != RequestTypeEnum.KitchenDestroy
+                               && SearchOrder.RequestType != RequestTypeEnum.CSRequestDestroy
+                               && item.RequestType  == 0" ng-click="doRequestDestroy(item.OrderId)" class="btn btn-danger btn-md col-md-12 mg-bottom-5"><i class="fa fa-trash-o"></i> CS Báo hủy </a>
+                            <a ng-show="(Role == RolesEnum.Admin
+                                        || Role == RolesEnum.CustomerService)
+                               && SearchOrder.RequestType == RequestTypeEnum.KitchenDestroy" ng-click="doRequestConfirmCustomer(item.OrderId)" class="btn btn-warning btn-md col-md-12 mg-bottom-5"><i class="fa fa-phone"></i> CS đã báo khách </a>
+                            <a ng-show="((Role == RolesEnum.CustomerService && SearchOrder.Status == OrderStatusEnum.Inactive)
+                                        ||Role == RolesEnum.Admin
+                                        || Role == RolesEnum.Manager
+                                        || Role == RolesEnum.KitchenManager) && SearchOrder.Status != OrderStatusEnum.Success
+                               && SearchOrder.RequestType != RequestTypeEnum.KitchenDestroy
+                               && SearchOrder.Status != OrderStatusEnum.Destroy" ng-click="doDestroy(item.OrderId)" class="btn btn-default btn-md col-md-12 mg-bottom-5"><i class="fa fa-ban"></i> Hủy đơn </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row pd-left-10">
+        <div class="col-sm-5">
+            <div class="dataTables_info mg-top-20 mg-bottom-5" role="status" aria-live="polite">
+                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+            </div>
+        </div>
+        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <uib-pagination class="pagination pull-right mg-right-10 mg-bottom-10" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>

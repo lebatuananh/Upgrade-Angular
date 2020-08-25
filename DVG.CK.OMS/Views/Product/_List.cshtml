@@ -1,0 +1,95 @@
+﻿@using DVG.CK.OMS.Extensions;
+<div class="box-body no-padding">
+    <div class="row pd-left-10">
+        <div class="col-sm-5">
+            <div class="dataTables_info mg-top-20 mg-bottom-5" role="status" aria-live="polite">
+                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+            </div>
+        </div>
+        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <uib-pagination class="pagination pull-right mg-right-10 mg-bottom-10" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 table-responsive">
+            <table id="datatable" class="table table-striped">
+                <thead>
+                    <tr role="row">
+                        <th>#</th>
+                        <th style="width: 75%">Sản phẩm</th>
+                        <th style="width: 25%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-if="ListData == ''">
+                        <td colspan="5">
+                            <p class="text-center">Không tìm thấy bài viết nào</p>
+                        </td>
+                    </tr>
+                    <tr role="row" ng-repeat="item in ListData track by $index">
+                        <td class="text-center">{{((page.currentPage - 1) * page.itemsPerPage) + $index+1}}</td>
+                        <td class="sorting_1">
+                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                <!-- Current avatar -->
+                                <div class="profile_img avatar-sq avatar-sq-90 avatar-view">
+                                    <a href="#" class="fl avatarindex block">
+                                        <img class="img-responsive" ng-src="{{item.AvatarStr}}" alt="{{item.Name}}">
+                                    </a>
+                                </div>
+                                <!-- end of image -->
+                            </div>
+                            <div class="col-md-10 col-sm-10 col-xs-12">
+                                <h4 class="tile_info">
+                                    <a href="{{item.FullUrl}}" target="_blank" ng-if="item.StatusOfProduct.IsApproved">{{item.Name}}</a>
+                                    <a href="javascript:void(0);" ng-if="!item.StatusOfProduct.IsApproved">{{item.Name}}</a>
+                                </h4>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="label" ng-class="item.StatusOfProduct.IsApproved ? 'label-primary' : 'label-danger'">{{item.StatusStr}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">Người tạo: {{item.CreatedBy}}</div>
+                                        <div class="col-md-6">Ngày tạo: {{item.CreatedDateStr}}</div>
+                                    </div>
+                                    <div class="row sub-info">
+                                        <div class="col-md-6">Người sửa cuối: {{item.LastModifiedBy}}</div>
+                                        <div class="col-md-6">Ngày sửa cuối: {{item.LastModifiedDateStr}}</div>
+                                    </div>
+                                    <div class="row sub-info">
+                                        <div class="col-md-6">Danh mục: {{item.CategoryName}}</div>
+                                        <div class="col-md-6">Ngày xuất bản: {{item.PublishedDateStr}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <a target="_blank" href="/Product/Update?encryptId={{item.EncryptId}}" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Sửa </a>
+                            <a ng-if="item.StatusOfProduct.IsNotApproved" ng-click="doApprove(item.EncryptId);" class="btn btn-success btn-xs"><i class="fa fa-check-square-o"></i> Xuất bản </a>
+                            <a ng-if="item.StatusOfProduct.IsApproved || item.StatusOfProduct.IsNotApproved" ng-click="doDelete(item.EncryptId);" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Xóa </a>
+                            <a ng-if="item.StatusOfProduct.IsApproved" ng-click="doNotApprove(item.EncryptId);" class="btn btn-danger btn-xs"><i class="fa fa-ban"></i> Gỡ bài </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row pd-left-10">
+        <div class="col-sm-5">
+            <div class="dataTables_info mg-top-20 mg-bottom-5" role="status" aria-live="polite">
+                Bạn đang ở trang {{page.currentPage}}/{{roundNumberPaging(page.itemsPerPage,page.totalItems)}} (có tổng {{page.totalItems}} bản ghi)
+            </div>
+        </div>
+        <div class="col-sm-7" ng-if="page.totalItems > page.itemsPerPage">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <uib-pagination class="pagination pull-right mg-right-10 mg-bottom-10" total-items="page.totalItems" max-size="5" items-per-page="page.itemsPerPage" ng-model="page.currentPage" ng-change="getListData()" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" boundary-links="true"></uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>

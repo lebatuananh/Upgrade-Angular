@@ -1,0 +1,45 @@
+﻿<div class="modal fade" tabindex="-1" role="dialog" id="modelConfirmWithReason">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Xác nhận thao tác: {{ConfirmActionTitle}}</h4>
+            </div>
+            <div class="modal-body">
+                <form id="formConfirmWithReason" name="formConfirmWithReason">
+                    <div class="row mg-bottom-10">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12 pd-top-5">
+                                Lý do
+                            </label>
+                            <div class="item col-md-9 col-sm-9 col-xs-12 pd-left-0">
+                                <span class="item-readonly col-md-12 col-sm-12 col-xs-12">
+                                    <textarea id="txtConfirmWithReason" class="col-md-12 col-sm-12 col-xs-12 form-control"></textarea>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="doConfirm(ConfirmAction)">Xác nhận</button>
+                <button type="button" class="btn btn-default" ng-click="doCancel()" data-dismiss="modal">Hủy</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modelConfirm">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Xác nhận thao tác: {{ConfirmActionTitle}}</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success col-md-6 col-sm-6 col-xs-12" style="margin-bottom: 5px; padding-bottom: 15px; padding-top: 15px;" ng-click="doConfirm(ConfirmAction)" >Xác nhận</button>
+                <button type="button" class="btn btn-default col-md-6 col-sm-6 col-xs-12" style="margin-right: -5px; padding-bottom: 15px; padding-top: 15px;" ng-click="doCancel()" data-dismiss="modal">Hủy</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

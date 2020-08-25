@@ -1,0 +1,41 @@
+﻿
+<div class="search-form clearfix" ng-class="!IsFormUpdate ? 'collapse': ''">
+    <form ng-model="SearchProduct">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Từ khóa</label>
+                <input type="text" class="form-control input-sm" name="Search.Keyword" ng-keypress="keypressAction($event)" ng-model="SearchProduct.Keyword" placeholder="Tên bài viết">
+            </div>
+        </div>
+        <div ng-if="false">
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in SearchProduct.ListStatus" ng-model="SearchProduct.Status" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Tồn kho</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in SearchProduct.ListWarehouseStatus" ng-model="SearchProduct.WarehouseStatus" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Danh mục</label>
+                <select class="form-control input-sm" ng-options="option.Id as option.Name for option in SearchProduct.ListCategory" ng-model="SearchProduct.CategoryId" ng-change="doSearch()">
+                    <option value="" class="" selected="selected">--Lựa chọn--</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="form-group">
+                <label></label>
+                <button type="button" class="form-control btn btn-primary btn-sm" ng-click="doSearch()">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+</div>
