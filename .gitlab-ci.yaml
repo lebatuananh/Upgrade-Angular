@@ -1,0 +1,119 @@
+image: docker:stable
+services:
+  - docker:dind
+
+stages:
+  - build
+  - deploy
+  - build-static
+  - clean
+
+variables:
+  #DOCKER_HOST: tcp://172.16.0
+  DOCKER_DRIVER: overlay2
+  TESTING_WEB_IMAGE: kitchen-oms/testing
+  TESTING_API_IMAGE: kitchen-oms-api/testing
+  TESTING_WEBAPI_IMAGE: kitchen-oms-webapi/testing
+  TESTING_CLIENT_IMAGE: kitchen-oms-client/testing
+  TESTING_WORKER_IMAGE: kitchen-oms-worker/testing
+before_script:
+#  - docker login -u $REGISTRY_USE -p $REGISTRY_PASS  $REGISTRY_URL
+#  - export CURRENT_COMMIT=${CI_COMMIT_SHA::8}
+
+
+OMS-Testing (build):
+  stage: build
+  tags:
+    - testing-build
+  script:
+    - docker build --cache-from $TESTING_WEB_IMAGE:latest --tag  $TESTING_WEB_IMAGE:latest  . -f DVG.CK.OMS/Testing.Dockerfile
+
+  only:
+    - testing
+
+
+OMS-Testing (deploy):
+  stage: deploy
+  tags:
+    - testing-deploy
+  script:
+    - docker service update --force --image $TESTING_WEB_IMAGE:latest web-kitch-oms
+  only:
+    - testing
+
+
+OMS-Api-Testing (build):
+  stage: build
+  tags:
+    - testing-api-build
+  script:
+    - docker build --cache-from $TESTING_API_IMAGE:latest --tag  $TESTING_API_IMAGE:latest  . -f DVG.CK.OMS.PublicApi/Testing.Dockerfile
+
+  only:
+    - testing
+
+
+OMS-Api-Testing (deploy):
+  stage: deploy
+  tags:
+    - testing-api-deploy
+  script:
+    - docker service update --force --image $TESTING_API_IMAGE:latest api-kitch-oms
+  #  - docker rm -v $(docker ps -a -q -f status=exited) && docker rmi $(docker images -f "dangling=true" -q) || true
+  only:
+    - testing
+
+
+OMS-Worker-Testing (build):
+  stage: build
+  tags:
+    - testing-worker-build
+  script:
+    - docker build --cache-from $TESTING_WORKER_IMAGE:latest --tag  $TESTING_WORKER_IMAGE:latest  . -f DVG.CK.Services/Testing.Dockerfile
+
+  only:
+    - testing
+
+
+OMS-Worker-Testing (deploy):
+  stage: deploy
+  tags:
+    - testing-worker-deploy
+  script:
+    - docker service update --force --image $TESTING_WORKER_IMAGE:latest worker-kitch-oms
+  
+  only:
+    - testing
+OMS-Testing(clean):
+
+  stage: clean
+  script:
+    -  docker rm -v $(docker ps -a -q -f status=exited) && docker rmi $(docker images -f "dangling=true" -q) || true
+  only:
+    - testing
+
+
+
+############################################## OMS ANGULAR###############################################################################
+OMS-WebApi-Testing (build):
+  stage: build
+  tags:
+    - testing-api-build
+  script:
+    - docker build --cache-from $TESTING_WEBAPI_IMAGE:latest --tag  $TESTING_WEBAPI_IMAGE:latest  . -f DVG.CK.OMSApi/Testing.Dockerfile
+    - docker service update --force --image  $TESTING_WEBAPI_IMAGE:latest webapi-kitchen-oms
+  only:
+    - testing_angular
+
+OMS-Client-Testing(build):
+  stage: build
+  tags: 
+    - testing-build
+  script:
+    #- ls DVG.CK.OMSClient
+    - docker build --cache-from $TESTING_CLIENT_IMAGE:latest --tag $TESTING_CLIENT_IMAGE:latest . -f DVG.CK.OMSClient/Testing.Dockerfile
+    - docker service update --force --image $TESTING_CLIENT_IMAGE:latest webclient-kitchen-oms
+  only:
+    - testing_angular
+
+#####################
